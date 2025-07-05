@@ -2,12 +2,12 @@ package com.ftracker.server.dto;
 
 import com.ftracker.server.enums.ExpenseType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class ExpenseRequest {
 
     private ExpenseType type;
-    private LocalDateTime time;
+    private LocalDate time;
     private Double amount;
     private String name;
     private String description;
@@ -22,11 +22,11 @@ public class ExpenseRequest {
         this.type = type;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 

@@ -1,5 +1,6 @@
 package com.ftracker.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ftracker.server.enums.RecurringRevenueType;
 import jakarta.persistence.*;
 
@@ -37,6 +38,7 @@ public class RecurringRevenue {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Integer getId() {

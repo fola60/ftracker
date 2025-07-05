@@ -7,6 +7,7 @@ import com.ftracker.server.repo.ExpenseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,23 +28,26 @@ public class ExpenseService {
         return expenseRepo.findById(id);
     }
 
-    public void saveExpense(ExpenseRequest expenseRequest) {
+    public Expense saveExpense(ExpenseRequest expenseRequest) {
         Expense expense = new Expense();
         User user = userService.getUserById(expenseRequest.getUser_id());
-        
-        expense.setTime(LocalDateTime.now());
+
+        if (expense.getTime() == null) {
+            expense.setTime(LocalDate.now());
+        }
         expense.setAmount(expenseRequest.getAmount());
         expense.setType(expenseRequest.getType());
         expense.setName(expenseRequest.getName());
-        expense.setDescription(expense.getDescription());
+        expense.setDescription(expenseRequest.getDescription());
         user.getExpenses().add(expense);
         expense.setUser(user);
 
-        expenseRepo.save(expense);
+        return expenseRepo.save(expense);
     }
 
-    public void deleteExpense(Integer id) {
-        expenseRepo.deleteExpenseById(id);
+    public boolean deleteExpense(Integer id) {
+        int deleted = expenseRepo.deleteExpenseById(id);
+        return deleted != 0;
     }
 
 }

@@ -47,7 +47,8 @@ public class RecurringRevenueService {
         recurringRevenueRepo.save(recurringRevenue);
     }
 
-    public void deleteRecurringRevenue(Integer id) {
-        recurringRevenueRepo.deleteRecurringRevenueById(id);
+    public boolean deleteRecurringRevenue(Integer id) {
+        int deleted = recurringRevenueRepo.deleteRecurringRevenueById(id);
+        return deleted != 0;
     }
 }

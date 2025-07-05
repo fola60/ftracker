@@ -7,7 +7,9 @@
 import Foundation
 
 func postExpense(expense: Expense) async -> Bool {
-    let url = URL(string: "http://localhost/expense/post-expense")!
+    print("Attempting post:")
+    dump(expense)
+    let url = URL(string: "http://localhost:8080/expense/post-expense")!
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
@@ -39,7 +41,9 @@ func postExpense(expense: Expense) async -> Bool {
 }
 
 func postIncome(income: Income) async -> Bool {
-    let url = URL(string: "http://localhost/income/post-income")!
+    print("Attempting post:")
+    dump(income)
+    let url = URL(string: "http://localhost:8080/income/post-income")!
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
@@ -69,7 +73,9 @@ func postIncome(income: Income) async -> Bool {
     }}
 
 func postRecurringCharge(recurringCharge: RecurringCharge) async -> Bool {
-    let url = URL(string: "http://localhost/recurring-charges/post-recurring-charge")!
+    print("Attempting post:")
+    dump(recurringCharge)
+    let url = URL(string: "http://localhost:8080/recurring-charges/post-recurring-charge")!
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
@@ -100,7 +106,9 @@ func postRecurringCharge(recurringCharge: RecurringCharge) async -> Bool {
 }
 
 func postRecurringRevenue(recurringRevenue: RecurringRevenue) async -> Bool {
-    let url = URL(string: "http://localhost/recurring-revenues/post-recurring-revenue")!
+    print("Attempting post: ")
+    dump(recurringRevenue)
+    let url = URL(string: "http://localhost:8080/recurring-revenues/post-recurring-revenue")!
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"

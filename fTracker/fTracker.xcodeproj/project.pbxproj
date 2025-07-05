@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		718508272E09AF570000F051 /* whisper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 718508262E09AF570000F051 /* whisper.xcframework */; };
+		718508282E09AF570000F051 /* whisper.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 718508262E09AF570000F051 /* whisper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		712884212DFB25BF004B8C43 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -23,10 +28,26 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		718508292E09AF570000F051 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				718508282E09AF570000F051 /* whisper.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		712884132DFB25BD004B8C43 /* fTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		712884202DFB25BF004B8C43 /* fTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7128842A2DFB25BF004B8C43 /* fTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		718507642E0713340000F051 /* whisper.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = whisper.xcframework; sourceTree = "<group>"; };
+		718508262E09AF570000F051 /* whisper.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = whisper.xcframework; path = "../../whisper.cpp/build-apple/whisper.xcframework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				718508272E09AF570000F051 /* whisper.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +100,7 @@
 				712884152DFB25BD004B8C43 /* fTracker */,
 				712884232DFB25BF004B8C43 /* fTrackerTests */,
 				7128842D2DFB25BF004B8C43 /* fTrackerUITests */,
+				718507C22E072AB80000F051 /* Frameworks */,
 				712884142DFB25BD004B8C43 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,8 +111,17 @@
 				712884132DFB25BD004B8C43 /* fTracker.app */,
 				712884202DFB25BF004B8C43 /* fTrackerTests.xctest */,
 				7128842A2DFB25BF004B8C43 /* fTrackerUITests.xctest */,
+				718507642E0713340000F051 /* whisper.xcframework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		718507C22E072AB80000F051 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				718508262E09AF570000F051 /* whisper.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,6 +134,7 @@
 				7128840F2DFB25BD004B8C43 /* Sources */,
 				712884102DFB25BD004B8C43 /* Frameworks */,
 				712884112DFB25BD004B8C43 /* Resources */,
+				718508292E09AF570000F051 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -195,6 +228,8 @@
 			);
 			mainGroup = 7128840A2DFB25BD004B8C43;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 712884142DFB25BD004B8C43 /* Products */;
 			projectDirPath = "";
@@ -397,6 +432,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to log finances. Audio recordings are discarded after transcription.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Log finances through speech.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -424,6 +461,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to log finances. Audio recordings are discarded after transcription.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Log finances through speech.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -33,6 +33,7 @@ public class RecurringChargeService {
         User user = userService.getUserById(recurringChargeRequest.getUser_id());
         RecurringCharge recurringCharge = new RecurringCharge();
 
+
         recurringCharge.setNext_date(next);
         recurringCharge.setTime_recurring(recurringChargeRequest.getTime_recurring());
         recurringCharge.setAmount(recurringChargeRequest.getAmount());
@@ -46,7 +47,8 @@ public class RecurringChargeService {
         recurringChargeRepo.save(recurringCharge);
     }
 
-    public void deleteRecurringCharge(Integer id) {
-        recurringChargeRepo.deleteRecurringChargeById(id);
+    public boolean deleteRecurringCharge(Integer id) {
+        int deleted = recurringChargeRepo.deleteRecurringChargeById(id);
+        return deleted != 0;
     }
 }

@@ -1,6 +1,7 @@
 package com.ftracker.server.repo;
 
 import com.ftracker.server.entity.Expense;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +16,8 @@ public interface ExpenseRepo extends JpaRepository<Expense, Integer> {
     public List<Expense> getAllExpenseById(Integer id);
 
     @Modifying
+    @Transactional
     @Query(value = "DELETE FROM expense WHERE id = :id", nativeQuery = true)
-    public void deleteExpenseById(Integer id);
+    public int deleteExpenseById(Integer id);
 
 }

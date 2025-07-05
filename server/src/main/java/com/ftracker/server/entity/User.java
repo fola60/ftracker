@@ -33,6 +33,39 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Income> Incomes = new ArrayList<>();
 
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDate getTimeAdded() {
+        return timeAdded;
+    }
+
+    public void setTimeAdded(LocalDate timeAdded) {
+        this.timeAdded = timeAdded;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
     public List<RecurringRevenue> getRecurringRevenues() {
         return recurringRevenues;
     }
@@ -64,4 +97,5 @@ public class User {
     public void setIncomes(List<Income> Incomes) {
         this.Incomes = Incomes;
     }
+
 }

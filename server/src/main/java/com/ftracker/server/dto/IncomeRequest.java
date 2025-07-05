@@ -2,13 +2,13 @@ package com.ftracker.server.dto;
 
 import com.ftracker.server.enums.IncomeType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class IncomeRequest {
 
     private IncomeType type;
     private Double amount;
-    private LocalDateTime time;
+    private LocalDate time;
     private String name;
     private String description;
     private Integer user_id;
@@ -31,11 +31,11 @@ public class IncomeRequest {
         this.amount = amount;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 

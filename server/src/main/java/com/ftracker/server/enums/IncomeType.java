@@ -4,5 +4,5 @@ public enum IncomeType {
     DEPOSITS,
     SALARY,
     SAVINGS,
-    OTHER
+    OTHERS
 }

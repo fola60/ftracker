@@ -1,8 +1,10 @@
 package com.ftracker.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ftracker.server.enums.ExpenseType;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +20,7 @@ public class Expense {
     private ExpenseType type;
 
     @Column(name = "time", nullable = false)
-    private LocalDateTime time;
+    private LocalDate time;
 
     @Column(name = "amount", nullable = false)
     private Double amount;
@@ -31,6 +33,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public User getUser() {
@@ -82,11 +85,11 @@ public class Expense {
         this.id = id;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 }

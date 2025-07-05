@@ -7,7 +7,7 @@ import com.ftracker.server.repo.IncomeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,14 +36,17 @@ public class IncomeService {
         income.setAmount(incomeRequest.getAmount());
         income.setType(incomeRequest.getType());
         income.setName(incomeRequest.getName());
-        income.setTime(LocalDateTime.now());
+        if (income.getTime() == null) {
+            income.setTime(LocalDate.now());
+        }
         user.getIncomes().add(income);
         income.setUser(user);
 
         incomeRepo.save(income);
     }
 
-    public void deleteIncome(Integer id) {
-        incomeRepo.deleteIncomeById(id);
+    public boolean deleteIncome(Integer id) {
+       int deleted = incomeRepo.deleteIncomeById(id);
+       return deleted != 0;
     }
 }

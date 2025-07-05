@@ -1,5 +1,6 @@
 package com.ftracker.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ftracker.server.enums.ExpenseType;
 import com.ftracker.server.enums.RecurringChargeType;
 import jakarta.persistence.*;
@@ -44,6 +45,7 @@ public class RecurringCharge {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Integer getId() {

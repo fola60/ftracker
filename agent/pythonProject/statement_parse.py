@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from openai import OpenAI
-from typing import Optional, Union
-from DataModels import StatementExtraction, Expense, Income, RecurringRevenue, RecurringCharge
+from DataModels import StatementExtraction, Expense, Income, RecurringRevenue, RecurringCharge, ResponseType, \
+    RecurringRevenueResponse, IncomeResponse, Response, RecurringChargeResponse, ExpenseResponse
 import os
 
 load_dotenv()
@@ -20,7 +20,7 @@ def extract_finance_info(user_input: str) -> StatementExtraction:
         messages=[
             {
                 "role": "system",
-                "content": "Analyze if the text describes a income, expense or neither."
+                "content": "Analyze if the text describes a income, expense, recurring expense, or recurring revenue."
             },
             {"role": "user", "content": user_input}
         ]
@@ -28,55 +28,44 @@ def extract_finance_info(user_input: str) -> StatementExtraction:
         response_format=StatementExtraction
     )
     result = response.choices[0].message.parsed
-    print(result)
+    print("Statement Extraction: ", result, "\n\n")
     return result
 
 # Parses a StatementExtraction Object into an expense
-def parse_finance_expense(statementExtraction: StatementExtraction, ) -> Optional[Expense]:
-    if statementExtraction.confidence_score >= 0.7:
-        response = client.beta.chat.completions.parse(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Extract the expense details."
-                },
-                {"role": "user", "content": statementExtraction.description}
-            ]
-            ,
-            response_format=Expense
-        )
-    else:
-        return None
-
-
+def parse_finance_expense(statementExtraction: StatementExtraction) -> Expense:
+    response = client.beta.chat.completions.parse(
+        model="gpt-4.1-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract detailed information about all expense(s) mentioned in the text. Only include costs."
+            },
+            {"role": "user", "content": statementExtraction.description}
+        ]
+        ,
+        response_format=Expense
+    )
 
     result = response.choices[0].message.parsed
-    print(result)
     return result
 
 
-def parse_finance_income(statementExtraction: StatementExtraction, ) -> Optional[Income]:
-    if statementExtraction.confidence_score >= 0.7:
-        response = client.beta.chat.completions.parse(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Extract the income details."
-                },
-                {"role": "user", "content": statementExtraction.description}
-            ]
-            ,
-            response_format=Income
-        )
-    else:
-        return None
-
+def parse_finance_income(statementExtraction: StatementExtraction, ) -> Income:
+    response = client.beta.chat.completions.parse(
+        model="gpt-4.1-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract detailed information about all income(s) mentioned in the text."
+            },
+            {"role": "user", "content": statementExtraction.description}
+        ]
+        ,
+        response_format=Income
+    )
 
 
     result = response.choices[0].message.parsed
-    print(result)
     return result
 
 def add_recurring_revenue(description: str) -> RecurringRevenue:
@@ -85,7 +74,7 @@ def add_recurring_revenue(description: str) -> RecurringRevenue:
         messages=[
             {
                 "role": "system",
-                "content": "Extract the recurring revenue details."
+                "content": "Extract the recurring revenue(s) details."
             },
             {"role": "user", "content": description}
         ]
@@ -101,7 +90,7 @@ def add_recurring_expense(description: str) -> RecurringCharge:
         messages=[
             {
                 "role": "system",
-                "content": "Extract the recurring charge details including amount, name, frequency, and description."
+                "content": "Extract the recurring charge(s) details."
             },
             {"role": "user", "content": description}
         ]
@@ -111,46 +100,38 @@ def add_recurring_expense(description: str) -> RecurringCharge:
 
     return response.choices[0].message.parsed
 
-def process_finance_request(user_request: str) -> Optional[dict]:
+def process_finance_request(user_request: str) -> list[Response]:
+    responses: list[Response] = []
     extracted_info = extract_finance_info(user_request)
 
     if extracted_info.is_income:
         parsed_income = parse_finance_income(extracted_info)
-        parsed_recurring_revenue = None
+        incomeResponse = IncomeResponse(success=True, type=ResponseType.INCOME, income=parsed_income)
+        responses.append(incomeResponse)
 
-        if extracted_info.is_recurring_revenue:
-            parsed_recurring_revenue = add_recurring_revenue(parsed_income.description)
-            if parsed_recurring_revenue.amount == 0.0 and parsed_income.amount > 0:
-                parsed_recurring_revenue.amount = parsed_income.amount
+    if extracted_info.is_recurring_revenue:
+        parsed_recurring_revenue = add_recurring_revenue(extracted_info.description)
+        recurringRevenueResponse = RecurringRevenueResponse(success=True, type=ResponseType.RECURRING_REVENUE, recurringRevenue=parsed_recurring_revenue)
+        responses.append(recurringRevenueResponse)
 
-        return {"income": parsed_income, "recurring_revenue": parsed_recurring_revenue }
 
-    elif extracted_info.is_expense:
+    if extracted_info.is_expense:
         parsed_expense = parse_finance_expense(extracted_info)
-        parsed_recurring_expense = None
+        expenseResponse = ExpenseResponse(success=True, type=ResponseType.EXPENSE, expense=parsed_expense)
+        responses.append(expenseResponse)
 
-        if extracted_info.is_recurring_expense:
-            parsed_recurring_expense = add_recurring_expense(parsed_expense.description)
-            if parsed_recurring_expense.amount == 0.0 and parsed_expense.amount > 0:
-                parsed_recurring_expense.amount = parsed_expense.amount
+    if extracted_info.is_recurring_expense:
+        parsed_recurring_expense = add_recurring_expense(extracted_info.description)
+        recurringChargeResponse = RecurringChargeResponse(success=True, type=ResponseType.RECURRING_CHARGE, recurringCharge=parsed_recurring_expense)
+        responses.append(recurringChargeResponse)
 
-        return {"expense": parsed_expense, "recurring_expense": parsed_recurring_expense }
 
-    else:
-        return None
 
-# -------+
-# testing
-# -------+
+    if not extracted_info.is_income and not extracted_info.is_expense and not extracted_info.is_recurring_expense and not extracted_info.is_recurring_revenue:
+        return [Response(success="False", error_message="Sorry, we cannot help you with that.", type=ResponseType.ERROR)]
 
-query1 = "I got some m and ms for like 2.80 by aldi"
-query2 = "dad gives me like 50 every night"
-query3 = "i get eggs every week for 5 euro"
+    return responses
 
-request1 = process_finance_request(query1)
-request2 = process_finance_request(query2)
-request3 = process_finance_request(query3)
 
-print("Request 1", request1)
-print("Request 2", request2)
-print("Request 3", request3)
+
+

@@ -7,7 +7,7 @@
 import Foundation
 
 func deleteExpense(_ expenseId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "http://localhost/expense/delete-expense/\(expenseId)")!)
+    var request = URLRequest(url: URL(string: "http://localhost:8080/expense/delete-expense/\(expenseId)")!)
     request.httpMethod = "DELETE"
     
     do {
@@ -24,7 +24,7 @@ func deleteExpense(_ expenseId: Int) async -> Bool {
 }
 
 func deleteIncome(_ incomeId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "http://localhost/income/delete-income/\(incomeId)")!)
+    var request = URLRequest(url: URL(string: "http://localhost:8080/income/delete-income/\(incomeId)")!)
     request.httpMethod = "DELETE"
     
     do {
@@ -41,7 +41,7 @@ func deleteIncome(_ incomeId: Int) async -> Bool {
 }
 
 func deleteRecurringCharge(_ recurringChargeId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "http://localhost/recurring-charges/delete-recurring-charge/\(recurringChargeId)")!)
+    var request = URLRequest(url: URL(string: "http://localhost:8080/recurring-charges/delete-recurring-charge/\(recurringChargeId)")!)
     request.httpMethod = "DELETE"
     
     do {
@@ -59,7 +59,7 @@ func deleteRecurringCharge(_ recurringChargeId: Int) async -> Bool {
 
 func deleteRecurringRevenue(_ recurringRevenueId: Int) async  -> Bool {
     
-    var request = URLRequest(url: URL(string: "http://localhost/recurring-revenues/delete-recurring-revenue/\(recurringRevenueId)")!)
+    var request = URLRequest(url: URL(string: "http://localhost:8080/recurring-revenues/delete-recurring-revenue/\(recurringRevenueId)")!)
     request.httpMethod = "DELETE"
     
     do {

@@ -1,6 +1,7 @@
 package com.ftracker.server.repo;
 
 import com.ftracker.server.entity.RecurringRevenue;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,7 @@ public interface RecurringRevenueRepo extends JpaRepository<RecurringRevenue, In
     public List<RecurringRevenue> getAllRecurringRevenueById(Integer id);
 
     @Modifying
+    @Transactional
     @Query(value = "DELETE FROM recurring_revenue WHERE id = :id", nativeQuery = true)
-    public void deleteRecurringRevenueById(Integer id);
+    public int deleteRecurringRevenueById(Integer id);
 }
