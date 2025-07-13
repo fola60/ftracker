@@ -55,11 +55,11 @@ struct ChartView: View {
             .foregroundStyle(.gray)
             .fontWeight(.medium)
         if (expenses.count == totalExpenseByDay.count && expenses.count > 0) {
-            Text("\(Globals.currency)\(totalExpenseByDay[expenses.count - 1], specifier: "%.2f")")
+            Text("\(Globals.currencySymbol)\(totalExpenseByDay[expenses.count - 1], specifier: "%.2f")")
                 .font(.system(size: 32))
                 .fontWeight(.heavy)
         } else {
-            Text("\(Globals.currency)0")
+            Text("\(Globals.currencySymbol)0")
         }
         Chart {
             if expenses.count == totalExpenseByDay.count {

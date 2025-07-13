@@ -15,9 +15,9 @@ public class Expense {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ExpenseType type;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = true)
+    private Category category;
 
     @Column(name = "time", nullable = false)
     private LocalDate time;
@@ -69,13 +69,6 @@ public class Expense {
         this.amount = amount;
     }
 
-    public ExpenseType getType() {
-        return type;
-    }
-
-    public void setType(ExpenseType type) {
-        this.type = type;
-    }
 
     public Integer getId() {
         return id;

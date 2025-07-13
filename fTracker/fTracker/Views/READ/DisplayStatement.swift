@@ -119,7 +119,7 @@ struct DisplayStatement: View {
                         .foregroundStyle(.black)
                         .fontWeight(.heavy)
                     Spacer()
-                    Text("\(sign)\(Globals.currency)\(String(format: "%.2f", price))")
+                    Text("\(sign)\(Globals.currencySymbol)\(String(format: "%.2f", price))")
                         .foregroundStyle(color)
                 }
                 Spacer()

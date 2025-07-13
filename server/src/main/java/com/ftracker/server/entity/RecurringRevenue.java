@@ -26,9 +26,6 @@ public class RecurringRevenue {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RecurringRevenueType type;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -71,16 +68,6 @@ public class RecurringRevenue {
 
     public void setAmount(Double amount) {
         this.amount = amount;
-    }
-
-
-
-    public RecurringRevenueType getType() {
-        return type;
-    }
-
-    public void setType(RecurringRevenueType type) {
-        this.type = type;
     }
 
     public String getName() {

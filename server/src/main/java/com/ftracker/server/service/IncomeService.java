@@ -34,7 +34,7 @@ public class IncomeService {
 
         income.setDescription(incomeRequest.getDescription());
         income.setAmount(incomeRequest.getAmount());
-        income.setType(incomeRequest.getType());
+        // TODO: set category
         income.setName(incomeRequest.getName());
         if (income.getTime() == null) {
             income.setTime(LocalDate.now());

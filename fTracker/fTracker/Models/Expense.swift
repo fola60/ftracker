@@ -33,7 +33,7 @@ class Expenses: ObservableObject {
 }
 
 
-class Expense: Decodable, Encodable, ObservableObject, Identifiable {
+final class Expense: Decodable, Encodable, ObservableObject, Identifiable, Sendable {
     let type: String
     let amount: Double
     let name: String

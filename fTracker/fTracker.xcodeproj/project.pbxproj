@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		718508272E09AF570000F051 /* whisper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 718508262E09AF570000F051 /* whisper.xcframework */; };
 		718508282E09AF570000F051 /* whisper.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 718508262E09AF570000F051 /* whisper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		718508D62E1AC3FB0000F051 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 718508D52E1AC3FB0000F051 /* KeychainAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				718508D62E1AC3FB0000F051 /* KeychainAccess in Frameworks */,
 				718508272E09AF570000F051 /* whisper.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -145,6 +147,7 @@
 			);
 			name = fTracker;
 			packageProductDependencies = (
+				718508D52E1AC3FB0000F051 /* KeychainAccess */,
 			);
 			productName = fTracker;
 			productReference = 712884132DFB25BD004B8C43 /* fTracker.app */;
@@ -229,6 +232,7 @@
 			mainGroup = 7128840A2DFB25BD004B8C43;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				718508D42E1AC37C0000F051 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 712884142DFB25BD004B8C43 /* Products */;
@@ -589,6 +593,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		718508D42E1AC37C0000F051 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		718508D52E1AC3FB0000F051 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 718508D42E1AC37C0000F051 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7128840B2DFB25BD004B8C43 /* Project object */;
 }

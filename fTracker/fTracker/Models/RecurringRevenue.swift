@@ -33,7 +33,7 @@ class RecurringRevenues: ObservableObject {
 }
 
 
-class RecurringRevenue: Decodable, Encodable, ObservableObject, Identifiable {
+final class RecurringRevenue: Decodable, Encodable, ObservableObject, Identifiable, Sendable {
     let type: String
     let time_recurring: Int
     let amount: Double

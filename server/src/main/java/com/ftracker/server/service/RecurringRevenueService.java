@@ -40,7 +40,7 @@ public class RecurringRevenueService {
         recurringRevenue.setDescription(recurringRevenueRequest.getDescription());
         recurringRevenue.setTime_recurring(recurringRevenueRequest.getTime_recurring());
         recurringRevenue.setName(recurringRevenueRequest.getName());
-        recurringRevenue.setType(recurringRevenueRequest.getType());
+        // TODO: set category
         user.getRecurringRevenues().add(recurringRevenue);
         recurringRevenue.setUser(user);
 

@@ -14,10 +14,6 @@ public class Income {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private IncomeType type;
-
     @Column(name = "amount", nullable = false)
     private Double amount;
 
@@ -42,15 +38,6 @@ public class Income {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-
-    public IncomeType getType() {
-        return type;
-    }
-
-    public void setType(IncomeType type) {
-        this.type = type;
     }
 
     public Double getAmount() {

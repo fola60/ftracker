@@ -39,7 +39,7 @@ extension Array {
 }
 
 
-class Income: Decodable, Encodable, ObservableObject, Identifiable {
+final class Income: Decodable, Encodable, ObservableObject, Identifiable, Sendable {
     let type: String
     let amount: Double
     let name: String

@@ -38,8 +38,7 @@ public class RecurringChargeService {
         recurringCharge.setTime_recurring(recurringChargeRequest.getTime_recurring());
         recurringCharge.setAmount(recurringChargeRequest.getAmount());
         recurringCharge.setDescription(recurringChargeRequest.getDescription());
-        recurringCharge.setType(recurringChargeRequest.getType());
-        recurringCharge.setRecurring_type(recurringChargeRequest.getRecurring_type());
+        // TODO: set category
         recurringCharge.setName(recurringChargeRequest.getName());
         user.getRecurringCharges().add(recurringCharge);
         recurringCharge.setUser(user);

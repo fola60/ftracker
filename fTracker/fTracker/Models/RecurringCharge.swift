@@ -35,7 +35,7 @@ class RecurringCharges: ObservableObject {
 
 
 
-class RecurringCharge: Decodable, Encodable, ObservableObject, Identifiable {
+final class RecurringCharge: Decodable, Encodable, ObservableObject, Identifiable, Sendable {
     let type: String
     let recurring_type: String
     let time_recurring: Int

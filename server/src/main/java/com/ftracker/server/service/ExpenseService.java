@@ -36,7 +36,7 @@ public class ExpenseService {
             expense.setTime(LocalDate.now());
         }
         expense.setAmount(expenseRequest.getAmount());
-        expense.setType(expenseRequest.getType());
+        // TODO: set category
         expense.setName(expenseRequest.getName());
         expense.setDescription(expenseRequest.getDescription());
         user.getExpenses().add(expense);

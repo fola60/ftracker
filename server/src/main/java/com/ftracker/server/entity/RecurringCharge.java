@@ -24,15 +24,6 @@ public class RecurringCharge {
     @Column(name = "next_date")
     private LocalDate next_date;
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ExpenseType type;
-
-    // This can be Subscription, bills, transport etc
-    @Column(name = "recurring_type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RecurringChargeType recurring_type;
-
     // Cost of the charge
     @Column(name = "amount", nullable = false)
     private Double amount;
@@ -78,22 +69,6 @@ public class RecurringCharge {
 
     public void setAmount(Double amount) {
         this.amount = amount;
-    }
-
-    public ExpenseType getType() {
-        return type;
-    }
-
-    public void setType(ExpenseType type) {
-        this.type = type;
-    }
-
-    public RecurringChargeType getRecurring_type() {
-        return recurring_type;
-    }
-
-    public void setRecurring_type(RecurringChargeType recurring_type) {
-        this.recurring_type = recurring_type;
     }
 
     public String getName() {

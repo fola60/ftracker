@@ -119,7 +119,7 @@ struct ListView: View {
         HStack {
             itemDetails(title: expense.name, description: expense.description)
             Spacer()
-            Text("-\(Globals.currency)\(expense.amount, specifier: "%.2f")")
+            Text("-\(Globals.currencySymbol)\(expense.amount, specifier: "%.2f")")
                 .foregroundColor(.red)
                 .font(.headline)
         }
@@ -129,7 +129,7 @@ struct ListView: View {
         HStack {
             itemDetails(title: income.name, description: income.description)
             Spacer()
-            Text("+\(Globals.currency)\(income.amount, specifier: "%.2f")")
+            Text("+\(Globals.currencySymbol)\(income.amount, specifier: "%.2f")")
                 .foregroundColor(.green)
                 .font(.headline)
         }
@@ -161,7 +161,7 @@ struct ListView: View {
     
     private func totalText(for date: Date) -> some View {
         let total = calculateDayTotal(for: date)
-        return Text("\(Globals.currency)\(total, specifier: "%.2f")")
+        return Text("\(Globals.currencySymbol)\(total, specifier: "%.2f")")
             .font(.headline)
             .fontWeight(.semibold)
             .foregroundColor(total >= 0 ? .green : .red)

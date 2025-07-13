@@ -11,7 +11,7 @@ import SwiftUI
 struct fTrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            ChartView(expenses: sampleExpenses, type: .exp)
+            AuthView()
         }
     }
 }
