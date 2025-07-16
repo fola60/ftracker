@@ -44,16 +44,7 @@ public class User {
     private String resetToken;
 
     @OneToMany(mappedBy = "user")
-    private List<RecurringRevenue> recurringRevenues = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<RecurringCharge> recurringCharges = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Expense> expenses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Income> incomes = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Budget> budgets = new ArrayList<>();
@@ -126,38 +117,6 @@ public class User {
     }
 
 
-    public List<RecurringRevenue> getRecurringRevenues() {
-        return recurringRevenues;
-    }
-
-    public void setRecurringRevenues(List<RecurringRevenue> recurringRevenues) {
-        this.recurringRevenues = recurringRevenues;
-    }
-
-    public List<RecurringCharge> getRecurringCharges() {
-        return recurringCharges;
-    }
-
-    public void setRecurringCharges(List<RecurringCharge> recurringCharges) {
-        this.recurringCharges = recurringCharges;
-    }
-
-    public List<Expense> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(List<Expense> expens) {
-        this.expenses = expens;
-    }
-
-    public List<Income> getIncomes() {
-        return incomes;
-    }
-
-    public void setIncomes(List<Income> Incomes) {
-        this.incomes = Incomes;
-    }
-
     public LocalDateTime getTokenExpiry() {
         return tokenExpiry;
     }
@@ -180,5 +139,13 @@ public class User {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

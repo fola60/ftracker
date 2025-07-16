@@ -194,4 +194,31 @@ func attemptSignUp(email: String, password: String) async -> User? {
     
 }
 
-await attemptSignUp(email: "afolabiadekanle@gmail.com", password: "fola23")
+//await attemptSignUp(email: "afolabiadekanle@gmail.com", password: "fola23")
+func extractUserId(from jwt: String) -> Int? {
+    let segments = jwt.split(separator: ".")
+    guard segments.count == 3 else { return nil }
+
+    let payloadSegment = segments[1]
+    
+    // Pad base64 string if needed
+    var base64 = String(payloadSegment)
+        .replacingOccurrences(of: "-", with: "+")
+        .replacingOccurrences(of: "_", with: "/")
+    
+    while base64.count % 4 != 0 {
+        base64 += "="
+    }
+
+    guard let data = Data(base64Encoded: base64),
+          let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+          let sub = json["sub"] as? String,
+          let userId = Int(sub)
+    else {
+        return nil
+    }
+
+    return userId
+}
+
+extractUserId(from: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzUyNjc2MDA3LCJleHAiOjE3ODQyMTIwMDd9.QOXeXcudH0WFEd_BIFSEo_JuFqVrOWMk7Xxm-d9wpcM")

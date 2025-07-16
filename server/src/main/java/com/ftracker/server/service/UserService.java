@@ -1,6 +1,10 @@
 package com.ftracker.server.service;
 
+import com.ftracker.server.entity.Budget;
+import com.ftracker.server.entity.BudgetCategory;
+import com.ftracker.server.entity.Category;
 import com.ftracker.server.entity.User;
+import com.ftracker.server.enums.HeadCategoryType;
 import com.ftracker.server.repo.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,6 +32,15 @@ public class UserService {
     @Autowired
     private JWTService jwtService;
 
+    @Autowired
+    @Lazy
+    private CategoryService categoryService;
+
+    @Autowired
+    @Lazy
+    private BudgetService budgetService;
+
+
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public User getUserById(Integer id) {
@@ -38,11 +52,61 @@ public class UserService {
         if (userRepo.getUserByEmail(user.getEmail()) == null) {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setTimeAdded(LocalDate.now());
+
+            user = userRepo.save(user);
+
+            List<Category> defaultCategories = getDefaultCategories();
+
+            for (Category category : defaultCategories) {
+                category.setUser(user);
+                categoryService.save(category);
+            }
+
+            defaultCategories = categoryService.getCategoryByUserId(user.getId());
+
+            Budget budget = new Budget();
+            budget.setUser(user);
+            budget.setName("My Household");
+
+
+            for (Category category : defaultCategories) {
+                BudgetCategory budgetCategory = new BudgetCategory();
+                budgetCategory.setBudgetAmount(0.00F);
+                budgetCategory.setCategoryId(category);
+                budgetCategory.setBudgetId(budget);
+                budgetService.saveBudgetCategoryMod(budgetCategory);
+                budget.getBudgetCategories().add(budgetCategory);
+            }
+
+            budgetService.save(budget);
+
+            user.getBudgets().add(budget);
             userRepo.save(user);
+
             return true;
         } else {
             return false;
         }
+    }
+
+    public List<Category> getDefaultCategories() {
+        List<Category> defaultCategories = new ArrayList<>();
+
+        defaultCategories.add(new Category("Salary", HeadCategoryType.INCOME));
+        defaultCategories.add(new Category("Savings", HeadCategoryType.SAVINGS));
+        defaultCategories.add(new Category("Rent", HeadCategoryType.HOUSING));
+        defaultCategories.add(new Category("Electricity", HeadCategoryType.HOUSING));
+        defaultCategories.add(new Category("Internet", HeadCategoryType.HOUSING));
+        defaultCategories.add(new Category("Telephone", HeadCategoryType.HOUSING));
+        defaultCategories.add(new Category("Tv", HeadCategoryType.ENTERTAINMENT));
+        defaultCategories.add(new Category("Restaurant", HeadCategoryType.FOOD_AND_DRINKS));
+        defaultCategories.add(new Category("Groceries", HeadCategoryType.FOOD_AND_DRINKS));
+        defaultCategories.add(new Category("Cloths", HeadCategoryType.LIFESTYLE));
+        defaultCategories.add(new Category("Gym", HeadCategoryType.LIFESTYLE));
+        defaultCategories.add(new Category("Public Transport", HeadCategoryType.TRANSPORTATION));
+        defaultCategories.add(new Category("Vehicle", HeadCategoryType.TRANSPORTATION));
+
+        return defaultCategories;
     }
 
     @Transactional

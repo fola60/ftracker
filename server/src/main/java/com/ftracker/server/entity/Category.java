@@ -24,6 +24,15 @@ public class Category {
     @JsonIgnore
     private User user;
 
+    public Category(String name, HeadCategoryType headCategoryType) {
+        setName(name);
+        setHeadCategory(headCategoryType);
+    }
+
+    public Category() {
+
+    }
+
     public Integer getId() {
         return id;
     }

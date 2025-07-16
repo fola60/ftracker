@@ -1,5 +1,6 @@
 package com.ftracker.server.config;
 
+import com.ftracker.server.entity.UserPrincipal;
 import com.ftracker.server.service.MyUserDetailsService;
 import com.ftracker.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,11 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         List<UserDetails> users = userService.getAllUsers()
                 .stream()
-                .map(user -> (UserDetails) user)
+                .map(user -> {
+                    UserPrincipal userPrincipal = new UserPrincipal();
+                    userPrincipal.setUser(user);
+                    return (UserDetails) userPrincipal;
+                })
                 .toList();
 
         return new InMemoryUserDetailsManager(users);

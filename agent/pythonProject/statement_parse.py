@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from openai import OpenAI
-from DataModels import StatementExtraction, Expense, Income, RecurringRevenue, RecurringCharge, ResponseType, \
+from DataModels import StatementExtraction, Expenses, Incomes, RecurringRevenues, RecurringCharges, ResponseType, \
     RecurringRevenueResponse, IncomeResponse, Response, RecurringChargeResponse, ExpenseResponse
 import os
 
@@ -32,7 +32,7 @@ def extract_finance_info(user_input: str) -> StatementExtraction:
     return result
 
 # Parses a StatementExtraction Object into an expense
-def parse_finance_expense(statementExtraction: StatementExtraction) -> Expense:
+def parse_finance_expense(statementExtraction: StatementExtraction) -> Expenses:
     response = client.beta.chat.completions.parse(
         model="gpt-4.1-mini",
         messages=[
@@ -43,14 +43,14 @@ def parse_finance_expense(statementExtraction: StatementExtraction) -> Expense:
             {"role": "user", "content": statementExtraction.description}
         ]
         ,
-        response_format=Expense
+        response_format=Expenses
     )
 
     result = response.choices[0].message.parsed
     return result
 
 
-def parse_finance_income(statementExtraction: StatementExtraction, ) -> Income:
+def parse_finance_income(statementExtraction: StatementExtraction, ) -> Incomes:
     response = client.beta.chat.completions.parse(
         model="gpt-4.1-mini",
         messages=[
@@ -61,14 +61,14 @@ def parse_finance_income(statementExtraction: StatementExtraction, ) -> Income:
             {"role": "user", "content": statementExtraction.description}
         ]
         ,
-        response_format=Income
+        response_format=Incomes
     )
 
 
     result = response.choices[0].message.parsed
     return result
 
-def add_recurring_revenue(description: str) -> RecurringRevenue:
+def add_recurring_revenue(description: str) -> RecurringRevenues:
     response = client.beta.chat.completions.parse(
         model="gpt-4.1-mini",
         messages=[
@@ -79,12 +79,12 @@ def add_recurring_revenue(description: str) -> RecurringRevenue:
             {"role": "user", "content": description}
         ]
         ,
-        response_format=RecurringRevenue
+        response_format=RecurringRevenues
     )
 
     return response.choices[0].message.parsed
 
-def add_recurring_expense(description: str) -> RecurringCharge:
+def add_recurring_expense(description: str) -> RecurringCharges:
     response = client.beta.chat.completions.parse(
         model="gpt-4.1-mini",
         messages=[
@@ -95,7 +95,7 @@ def add_recurring_expense(description: str) -> RecurringCharge:
             {"role": "user", "content": description}
         ]
         ,
-        response_format=RecurringCharge
+        response_format=RecurringCharges
     )
 
     return response.choices[0].message.parsed

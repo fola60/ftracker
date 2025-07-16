@@ -11,8 +11,6 @@ import KeychainAccess
 
 let keychain = Keychain(service: "com.afolabi.fTracker")
 
-var userId: Int = 1
-var primaryColor: Color = Color.blue
 
 class Globals {
     static var userId: Int = 1
@@ -27,7 +25,7 @@ class Globals {
         if token == "FAIL" {
             return false
         }
-        
+        Globals.userId = extractUserId(from: token) ?? 0
         try? keychain.set(token, key: "jwt")
     
         return true;
@@ -40,6 +38,32 @@ class Globals {
     public static func signUp(email: String, password: String) async -> String?{
         let message: String? = await attemptSignUp(email: email, password: password)
         return message
+    }
+    
+    private static func extractUserId(from jwt: String) -> Int? {
+        let segments = jwt.split(separator: ".")
+        guard segments.count == 3 else { return nil }
+
+        let payloadSegment = segments[1]
+        
+        
+        var base64 = String(payloadSegment)
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        
+        while base64.count % 4 != 0 {
+            base64 += "="
+        }
+
+        guard let data = Data(base64Encoded: base64),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let sub = json["sub"] as? String,
+              let userId = Int(sub)
+        else {
+            return nil
+        }
+
+        return userId
     }
     
     

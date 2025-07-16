@@ -28,7 +28,6 @@ public class UserController {
     public ResponseEntity<String> postUser(@Validated @RequestBody User user) {
         User existingUser = service.getUserByEmail(user.getEmail());
 
-
         if (existingUser != null) {
             if (existingUser.isVerified()) {
                 return new ResponseEntity<>("Login. User already exists.", HttpStatus.CONFLICT);
