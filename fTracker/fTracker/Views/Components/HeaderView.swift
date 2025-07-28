@@ -9,16 +9,18 @@ import SwiftUI
 
 struct HeaderView: View {
     enum Section {
-        case overview, list
+        case overview, list, budget
     }
     
+    @Binding var navigateTo: fTrackerApp.Screen
     @State var section: Section
+    
     
     var body: some View {
         VStack {
             HStack {
                 Button {
-                    // Open settings
+                    
                 } label: {
                     Image(systemName: "gearshape.fill")
                         .resizable()
@@ -27,11 +29,11 @@ struct HeaderView: View {
                 }
                 Spacer()
             }
-            .padding(.horizontal)
+            .padding()
             
             HStack {
                 Button {
-                    section = Section.overview
+                    navigateTo = .landing
                 } label: {
                     Text("Overview")
                         .font(.system(size: 20))
@@ -41,11 +43,10 @@ struct HeaderView: View {
                 .background(section == Section.overview ? Color.white.opacity(0.1) : Color.clear)
                 .cornerRadius(20)
                 
-                
-                
+
                 
                 Button {
-                    section = Section.list
+                    navigateTo = .list
                 } label: {
                     Text("List")
                         .font(.system(size: 20))
@@ -55,7 +56,10 @@ struct HeaderView: View {
                 .frame(width: 120, height: 35)
                 .background(section == Section.list ? Color.white.opacity(0.1) : Color.clear)
                 .cornerRadius(20)
+                
+                
             }
+            
         }
         .frame(maxWidth: .infinity, minHeight: 105)
         .background(Globals.primaryColor)
@@ -65,6 +69,3 @@ struct HeaderView: View {
     
 }
 
-#Preview {
-    HeaderView(section: HeaderView.Section.overview)
-}

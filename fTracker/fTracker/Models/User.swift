@@ -10,20 +10,14 @@ final class User: Codable, Sendable {
     private let id: Int?
     private let email: String
     private let password: String?
-    private let expenses: [Expense]?
-    private let incomes: [Income]?
-    private let recurringCharges: [RecurringCharge]?
-    private let recurringRevenues: [RecurringRevenue]?
+    private let transactions: [Transaction]
     
     
-    init(userId: Int? = nil, email: String, password: String? = nil, expenses: [Expense]? = nil, incomes: [Income]? = nil, recurringCharges: [RecurringCharge]? = nil, recurringRevenue: [RecurringRevenue]? = nil) {
-        self.id = userId
+    init(id: Int? = nil, email: String, password: String?, transactions: [Transaction] = []) {
+        self.id = id
         self.email = email
         self.password = password
-        self.expenses = expenses
-        self.incomes = incomes
-        self.recurringCharges = recurringCharges
-        self.recurringRevenues = recurringRevenue
+        self.transactions = transactions
     }
     
     public func getEmail() -> String {

@@ -13,12 +13,15 @@ let keychain = Keychain(service: "com.afolabi.fTracker")
 
 
 class Globals {
-    static var userId: Int = 1
+    static var userId: Int = extractUserId(from: jsonToken) ?? 0
     static var primaryColor: Color = Color.blue
     static var currencySymbol:String = "€"
     static var jsonToken: String {
         return keychain["jwt"] ?? ""
     }
+    static var backendUrl: String = "http://localhost:8080"
+    static var userCategories: [Category] = []
+    static var defaultCategory: Category = Category(id: 0, headCategory: .miscellaneous, name: "Miscellaneous")
     
     public static func signIn(email: String, password: String) async -> Bool{
         let token: String = await attemptLogIn(user: User(email: email, password: password))
@@ -27,7 +30,7 @@ class Globals {
         }
         Globals.userId = extractUserId(from: token) ?? 0
         try? keychain.set(token, key: "jwt")
-    
+        defaultCategory = await getDefaultCategory()
         return true;
     }
     
@@ -66,5 +69,9 @@ class Globals {
         return userId
     }
     
+    public static func getDefaultCategory() async -> Category {
+        let categories = await getCategories()
+        return categories.first(where: { $0.name == "Miscellaneous" }) ?? Category(id: 0, headCategory: .miscellaneous, name: "Miscellaneous")
+    }
     
 }

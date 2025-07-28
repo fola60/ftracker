@@ -6,9 +6,10 @@
 //
 import Foundation
 
-func deleteExpense(_ expenseId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "http://localhost:8080/expense/delete-expense/\(expenseId)")!)
+func deleteTransaction(_ transactionId: Int) async -> Bool {
+    var request = URLRequest(url: URL(string: "\(Globals.backendUrl)/transaction/delete/\(transactionId)")!)
     request.httpMethod = "DELETE"
+    request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
     
     do {
         let (_, response) = try await URLSession.shared.data(for: request)
@@ -23,9 +24,10 @@ func deleteExpense(_ expenseId: Int) async -> Bool {
     return false
 }
 
-func deleteIncome(_ incomeId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "http://localhost:8080/income/delete-income/\(incomeId)")!)
+func deleteCategory(_ categoryId: Int) async -> Bool {
+    var request = URLRequest(url: URL(string: "\(Globals.backendUrl)/category/delete/\(categoryId)")!)
     request.httpMethod = "DELETE"
+    request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
     
     do {
         let (_, response) = try await URLSession.shared.data(for: request)
@@ -40,9 +42,10 @@ func deleteIncome(_ incomeId: Int) async -> Bool {
     return false
 }
 
-func deleteRecurringCharge(_ recurringChargeId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "http://localhost:8080/recurring-charges/delete-recurring-charge/\(recurringChargeId)")!)
+func deleteBudget(_ budgetId: Int) async -> Bool {
+    var request = URLRequest(url: URL(string: "\(Globals.backendUrl)/budget/delete-budget/\(budgetId)")!)
     request.httpMethod = "DELETE"
+    request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
     
     do {
         let (_, response) = try await URLSession.shared.data(for: request)
@@ -57,10 +60,10 @@ func deleteRecurringCharge(_ recurringChargeId: Int) async -> Bool {
     return false
 }
 
-func deleteRecurringRevenue(_ recurringRevenueId: Int) async  -> Bool {
-    
-    var request = URLRequest(url: URL(string: "http://localhost:8080/recurring-revenues/delete-recurring-revenue/\(recurringRevenueId)")!)
+func deleteBudgetCategory(_ budgetCategoryId: Int) async -> Bool {
+    var request = URLRequest(url: URL(string: "\(Globals.backendUrl)/budget/delete-budget-categort/\(budgetCategoryId)")!)
     request.httpMethod = "DELETE"
+    request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
     
     do {
         let (_, response) = try await URLSession.shared.data(for: request)
@@ -74,3 +77,4 @@ func deleteRecurringRevenue(_ recurringRevenueId: Int) async  -> Bool {
     
     return false
 }
+

@@ -9,8 +9,9 @@ import SwiftUI
 
 
 struct FooterView: View {
+    @Binding var navigateTo: fTrackerApp.Screen
     enum Section {
-        case analytic, overview, tool
+        case analytic, overview, tool, budget
     }
     
     @State var section: Section
@@ -22,6 +23,7 @@ struct FooterView: View {
             VStack {
                 Button {
                     section = .overview
+                    navigateTo = .landing
                 } label: {
                     Image(systemName: "eye.fill")
                         .resizable()
@@ -37,9 +39,11 @@ struct FooterView: View {
             }
             
             Spacer()
+            
             VStack {
                 Button {
                     section = .analytic
+                    navigateTo = .analytics
                 } label: {
                     Image(systemName: "chart.xyaxis.line")
                         .resizable()
@@ -52,11 +56,32 @@ struct FooterView: View {
                     .font(.system(size: 12))
                     .foregroundStyle(section == Section.analytic ? .black : .gray)
             }
+            
+            Spacer()
+            
+            VStack {
+                Button {
+                    section = .budget
+                    navigateTo = .budget
+                } label: {
+                    Image(systemName: "dollarsign.circle")
+                        .resizable()
+                        .foregroundStyle(section == Section.budget ? Globals.primaryColor : .gray)
+                        .frame(width: 25, height: 25)
+                    
+                }
+                .disabled(section == Section.budget)
+                Text("Budget")
+                    .font(.system(size: 12))
+                    .foregroundStyle(section == Section.budget ? .black : .gray)
+            }
+            
             Spacer()
             
             VStack {
                 Button {
                     section = .tool
+                    navigateTo = .tools
                 } label: {
                     Image(systemName: "wrench.adjustable")
                         .resizable()
@@ -77,6 +102,5 @@ struct FooterView: View {
     }
 }
 
-#Preview {
-    FooterView(section: FooterView.Section.overview)
-}
+
+

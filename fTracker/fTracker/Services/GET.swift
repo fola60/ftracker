@@ -6,57 +6,124 @@
 //
 import Foundation
 
-func getExpenses(userId: Int) async throws -> Array<Expense> {
-    
-    let url = URL(string: "http://localhost:8080/expense/get-expense-by-user-id/\(userId)")!
-    let (data, _) = try await URLSession.shared.data(from: url)
-    let decoder = JSONDecoder()
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd"
-    decoder.dateDecodingStrategy = .formatted(formatter)
-    let decoded = try decoder.decode([Expense].self, from: data)
-    
-    return decoded
+func getTransactions() async -> [Transaction] {
+    do {
+        let url = URL(string: "\(Globals.backendUrl)/transaction/get-all/\(Globals.userId)")!
+        var request = URLRequest(url: url)
+        
+        request.httpMethod = "GET"
+        request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let decoder = JSONDecoder()
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        
+        let decoded = try decoder.decode([Transaction].self, from: data)
+        return decoded
+    } catch {
+        print("Network error: \(error)")
+        return []
+    }
 }
 
-func getIncomes(userId: Int) async throws -> Array<Income> {
-    let url = URL(string: "http://localhost:8080/income/get-income-by-user-id/\(userId)")!
-    let (data, _) = try await URLSession.shared.data(from: url)
-    let decoder = JSONDecoder()
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd"
-    decoder.dateDecodingStrategy = .formatted(formatter)
-    let decoded = try decoder.decode([Income].self, from: data)
-    
-    return decoded;
+func getTransaction(_ transaction_id: Int) async -> Transaction? {
+    let transactions = await getTransactions()
+    return transactions.first { $0.id == transaction_id }
 }
 
-func getRecurringCharges(userId: Int) async throws -> Array<RecurringCharge> {
-    let url = URL(string: "http://localhost:8080/recurring-charges/get-recurring-charge/\(userId)")!
-    let (data, _) = try await URLSession.shared.data(from: url)
-    let decoder = JSONDecoder()
-    let decoded = try decoder.decode([RecurringCharge].self, from: data)
+func getExpenses(userId: Int) async -> [Transaction] {
+    return await getTransactions().filter{ $0.transactionType == .expense}
     
-    return decoded;
 }
 
-func getRecurringRevenues(userId: Int) async throws -> Array<RecurringRevenue> {
-    let url = URL(string: "http://localhost:8080/recurring-revenues/get-recurring-revenue/\(userId)")!
-    let (data, _) = try await URLSession.shared.data(from: url)
-    let decoder = JSONDecoder()
-    let decoded = try decoder.decode([RecurringRevenue].self, from: data)
-    
-    return decoded;
+func getIncomes(userId: Int) async -> [Transaction] {
+    return await getTransactions().filter{ $0.transactionType == .income}
 }
 
-func getSpeechFinanceRequest(speech_text: String) async throws -> Array<SpeechResponse> {
-    let url = URL(string: "http://localhost:8000/finance-request?request=\(speech_text)")!
-    let (data, response) = try await URLSession.shared.data(from: url)
+func getRecurringExpenses(userId: Int) async -> [Transaction] {
+    return await getTransactions().filter{ $0.transactionType == .recurring_expense}
+}
+
+func getRecurringIncomes(userId: Int) async -> [Transaction] {
+    return await getTransactions().filter{ $0.transactionType == .recurring_income}
+}
+
+func getCategories() async -> [Category] {
+    do {
+        let url = URL(string: "\(Globals.backendUrl)/category/get-by-user-id/\(Globals.userId)")!
+        var request = URLRequest(url: url)
+        
+        request.httpMethod = "GET"
+        request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let decoder = JSONDecoder()
+        
+        let decoded = try decoder.decode([Category].self, from: data)
+        return decoded
+    } catch {
+        print("Network error: \(error)")
+        return []
+    }
+}
+
+func getBudgets() async -> [Budget] {
+    do {
+        let url = URL(string: "\(Globals.backendUrl)/budget/get-budget-by-user-id/\(Globals.userId)")!
+        var request = URLRequest(url: url)
+        
+        request.httpMethod = "GET"
+        request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let decoder = JSONDecoder()
+        
+        let decoded = try decoder.decode([Budget].self, from: data)
+        return decoded
+    } catch {
+        print("Network error: \(error)")
+        return []
+    }
+}
+
+
+func getSpeechFinanceRequest(speech_text: String, chats: [AIChat.ChatMessage]) async throws -> Array<SpeechResponse> {
+    let url = URL(string: "http://localhost:8000/finance-request")!
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+    let recentChats = chats.suffix(5)
+    let messagesText = recentChats.compactMap { chat -> String? in
+        switch chat.content {
+        case .text(let string):
+            switch chat.sender {
+            case .user:
+                return "User: \(string)"
+            case .ai:
+                return "AI: \(string)"
+            }
+        default: return nil
+        }
+    }
+
+    let body: [String: Any] = [
+        "request": speech_text,
+        "token": Globals.jsonToken,
+        "chat_history": messagesText
+    ]
+
+    request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+    let (data, response) = try await URLSession.shared.data(for: request)
     guard let httpResponse = response as? HTTPURLResponse,
           httpResponse.statusCode == 200 else {
         throw URLError(.badServerResponse)
     }
-    
+
     let decoded = try JSONDecoder().decode(Array<SpeechResponse>.self, from: data)
     return decoded
 }

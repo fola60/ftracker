@@ -4,6 +4,7 @@ struct AuthView: View {
     enum FocusedField {
         case str1, str2
     }
+    @Binding var navigateTo: fTrackerApp.Screen
     @State private var isSignUp: Bool = false
     @State private var email: String = ""
     @State private var password: String = ""
@@ -326,7 +327,7 @@ struct ForgotPasswordView: View {
         loading = true
         emailFocused = false
         
-        // Call your reset password function here
+        
         if let messageResponse = await resetPassword(email: resetEmail) {
             success = true
             message = messageResponse
@@ -342,7 +343,3 @@ struct ForgotPasswordView: View {
     }
 }
 
-
-#Preview {
-    AuthView()
-}
