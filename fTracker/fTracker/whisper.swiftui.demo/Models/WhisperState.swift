@@ -167,13 +167,13 @@ class WhisperState: NSObject, ObservableObject, AVAudioRecorderDelegate {
     }
     
     private func startPlayback(_ url: URL) throws {
-        audioPlayer = try AVAudioPlayer(contentsOf: url)
-        audioPlayer?.play()
+        //audioPlayer = try AVAudioPlayer(contentsOf: url)
+        //audioPlayer?.play()
     }
     
     private func stopPlayback() {
-        audioPlayer?.stop()
-        audioPlayer = nil
+        //audioPlayer?.stop()
+        //audioPlayer = nil
     }
     
     // MARK: AVAudioRecorderDelegate

@@ -61,7 +61,7 @@ func deleteBudget(_ budgetId: Int) async -> Bool {
 }
 
 func deleteBudgetCategory(_ budgetCategoryId: Int) async -> Bool {
-    var request = URLRequest(url: URL(string: "\(Globals.backendUrl)/budget/delete-budget-categort/\(budgetCategoryId)")!)
+    var request = URLRequest(url: URL(string: "\(Globals.backendUrl)/budget/delete-budget-category/\(budgetCategoryId)")!)
     request.httpMethod = "DELETE"
     request.addValue("Bearer \(Globals.jsonToken)", forHTTPHeaderField: "Authorization")
     

@@ -10,8 +10,6 @@ import com.ftracker.server.repo.BudgetCategoryRepo;
 import com.ftracker.server.repo.BudgetRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,7 +38,7 @@ public class BudgetService {
         budget.setName(budgetRequest.getName());
         budget.setUser(user);
 
-        budgetRepo.save(budget);
+        budget = budgetRepo.save(budget);
         user.getBudgets().add(budget);
 
         return budget;
@@ -51,27 +49,25 @@ public class BudgetService {
         return deleted == 1;
     }
 
-    public boolean saveBudgetCategory(BudgetCategoryRequest budgetCategoryRequest) {
+    public BudgetCategory saveBudgetCategory(BudgetCategoryRequest budgetCategoryRequest) {
         BudgetCategory budgetCategory = new BudgetCategory();
+
         Budget budget = getBudgetById(budgetCategoryRequest.getBudget_id());
         Category category = categoryService.getCategoryById(budgetCategoryRequest.getCategory_id());
-
-        if (budgetRepo.containsCategoryById(budgetCategoryRequest.getBudget_id(), budgetCategoryRequest.getCategory_id())) {
-            return false;
-        }
 
         if (budgetCategoryRequest.getBudget_id() != null) {
             budgetCategory.setId(budgetCategoryRequest.getId());
         }
 
-        budgetCategory.setBudgetAmount(budgetCategory.getBudgetAmount());
+        budgetCategory.setBudgetAmount(budgetCategoryRequest.getAmount());
         budgetCategory.setBudgetId(budget);
         budgetCategory.setCategoryId(category);
 
-        budgetCategoryRepo.save(budgetCategory);
+
+        budgetCategory = budgetCategoryRepo.save(budgetCategory);
         budget.getBudgetCategories().add(budgetCategory);
 
-        return true;
+        return budgetCategory;
     }
 
     public boolean deleteBudgetCategory(Integer budgetCategoryId) {
@@ -88,8 +84,9 @@ public class BudgetService {
     }
 
 
-    public void save(Budget budget) {
-        budgetRepo.save(budget);
+    public Budget save(Budget budget) {
+        budget = budgetRepo.save(budget);
+        return budget;
     }
 
     public void saveBudgetCategoryMod(BudgetCategory budgetCategory) {

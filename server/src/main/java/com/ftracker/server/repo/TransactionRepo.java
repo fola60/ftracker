@@ -14,16 +14,16 @@ public interface TransactionRepo extends JpaRepository<Transaction, Integer> {
     @Query(value = "SELECT * FROM transaction WHERE user_id = :id", nativeQuery = true)
     public List<Transaction> getAllTransactionById(Integer id);
 
-    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 'EXPENSE'", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 0", nativeQuery = true)
     public List<Transaction> getAllExpenseById(Integer id);
 
-    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 'INCOME'", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 1", nativeQuery = true)
     public List<Transaction> getAllIncomeById(Integer id);
 
-    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 'RECURRING_EXPENSE'", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 2", nativeQuery = true)
     public List<Transaction> getAllRecurringExpenseById(Integer id);
 
-    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 'RECURRING_INCOME'", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction WHERE user_id = :id AND transaction_type = 3", nativeQuery = true)
     public List<Transaction> getAllRecurringIncomeById(Integer id);
 
     @Modifying

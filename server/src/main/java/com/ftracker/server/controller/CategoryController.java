@@ -1,6 +1,7 @@
 package com.ftracker.server.controller;
 
 import com.ftracker.server.dto.CategoryRequest;
+import com.ftracker.server.entity.Budget;
 import com.ftracker.server.entity.Category;
 import com.ftracker.server.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,10 @@ public class CategoryController {
     }
 
     @PostMapping("/post")
-    public boolean save(@Validated @RequestBody CategoryRequest categoryRequest) {
+    public Category save(@Validated @RequestBody CategoryRequest categoryRequest) {
         return categoryService.saveCategory(categoryRequest);
     }
+
 
     @DeleteMapping("/delete/{id}")
     public boolean delete(Integer id) {

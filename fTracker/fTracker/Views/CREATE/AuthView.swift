@@ -187,6 +187,9 @@ struct AuthView: View {
         success = loginRes
         message = loginRes ? "Logged in!" : "Email or Password Incorrect!"
         showToast = true
+        if success {
+            navigateTo = .landing
+        }
         await hideToastAfterDelay()
     }
     

@@ -7,6 +7,7 @@ struct TransactionView: View {
     
     let transaction: Transaction?
     let create: Bool
+    let onTransactionChanged: (() -> Void)? // Add callback parameter
     
     private var transactionType: TransactionType {
         if isIncome {
@@ -39,9 +40,11 @@ struct TransactionView: View {
     
     private var dayToStringMap = [nil:"Never Repeat", 1:"Every Day", 7: "Every Week", 14: "Every other week", 30: "Every month", 60: "Every other month", 90: "Every 3 months", 365: "Every year"]
     
-    init(transaction: Transaction?, create: Bool) {
+    
+    init(transaction: Transaction?, create: Bool, onTransactionChanged: (() -> Void)? = nil) {
         self.transaction = transaction
         self.create = create
+        self.onTransactionChanged = onTransactionChanged
         id = transaction?.id
         isIncome = transaction?.transactionType == .income || transaction?.transactionType == .recurring_income
         amount = transaction?.amount ?? 0.00
@@ -129,7 +132,7 @@ struct TransactionView: View {
                 .padding()
                 
                 HStack {
-                    Image(systemName: CategoryView.categoryIconMap[category.name] ?? "eurosign.bank.building")
+                    Image(systemName: CategoryView.iconForCategory(category.name))
                         .resizable()
                         .frame(width: 30, height: 30)
                         .padding(.leading)
@@ -260,13 +263,24 @@ struct TransactionView: View {
     }
     
     private func saveTransactionLocal() async {
+        if !create {
+            let _ = await deleteTransaction(transaction?.id ?? 1)
+        }
         let transactionRequest = TransactionRequest(category_id: category.id ?? -1, time: time, amount: amount, name: name, description: description, transaction_type: transactionType, time_recurring: time_recurring, user_id: Globals.userId)
         let _ = await postTransaction(transaction: transactionRequest)
+        
+        
+        onTransactionChanged?()
+        
         dismiss()
     }
     
     private func deleteTransactionLocal() async {
         let _ = await deleteTransaction(transaction?.id ?? -1)
+        
+        
+        onTransactionChanged?()
+        
         dismiss()
     }
 }

@@ -7,6 +7,7 @@
 import Foundation
 
 func getTransactions() async -> [Transaction] {
+    print("GET TRANSACTION CALLED")
     do {
         let url = URL(string: "\(Globals.backendUrl)/transaction/get-all/\(Globals.userId)")!
         var request = URLRequest(url: url)
@@ -52,6 +53,7 @@ func getRecurringIncomes(userId: Int) async -> [Transaction] {
 }
 
 func getCategories() async -> [Category] {
+    print("GET CATEGORIES CALLED")
     do {
         let url = URL(string: "\(Globals.backendUrl)/category/get-by-user-id/\(Globals.userId)")!
         var request = URLRequest(url: url)
@@ -71,6 +73,7 @@ func getCategories() async -> [Category] {
 }
 
 func getBudgets() async -> [Budget] {
+    print("GET BUDGETS CALLED")
     do {
         let url = URL(string: "\(Globals.backendUrl)/budget/get-budget-by-user-id/\(Globals.userId)")!
         var request = URLRequest(url: url)
@@ -91,6 +94,7 @@ func getBudgets() async -> [Budget] {
 
 
 func getSpeechFinanceRequest(speech_text: String, chats: [AIChat.ChatMessage]) async throws -> Array<SpeechResponse> {
+    print("GET SPEECH FINANCE REQUEST CALLED")
     let url = URL(string: "http://localhost:8000/finance-request")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"

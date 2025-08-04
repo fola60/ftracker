@@ -27,12 +27,12 @@ public class CategoryService {
         return categoryRepo.getCategoryById(categoryId);
     }
 
-    public boolean saveCategory(CategoryRequest categoryRequest) {
+    public Category saveCategory(CategoryRequest categoryRequest) {
         Category category = new Category();
         User user = userService.getUserById(categoryRequest.getUser_id());
 
         if (inUserCategories(categoryRequest.getUser_id(), categoryRequest.getName())) {
-            return false;
+            return category;
         }
 
         if (categoryRequest.getId() == null) {
@@ -43,10 +43,10 @@ public class CategoryService {
         category.setName(categoryRequest.getName());
         category.setUser(user);
 
-        categoryRepo.save(category);
+        category = categoryRepo.save(category);
         user.getCategories().add(category);
 
-        return true;
+        return category;
     }
 
     public boolean inUserCategories(Integer userId, String Category) {

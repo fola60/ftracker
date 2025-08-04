@@ -1,27 +1,35 @@
+import json
+import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
-from DataModels import StatementExtraction, Expenses, Incomes, RecurringRevenues, RecurringCharges, ResponseType, \
-    RecurringRevenueResponse, IncomeResponse, Response, RecurringChargeResponse, ExpenseResponse
+from pydantic import BaseModel
 import os
+from DataModels import Response, StatementType, InfoResponse, BudgetResponse, TransactionResponse, StatementExtraction
+from CRUD import TOOLS, call_function, extract_user_id_from_jwt
+
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 
 
+SYSTEM_PROMPT = "You are a helpful assistant for our money tracking and budgeting app."
+MODEL = os.getenv("OPENAI_MODEL_NAME")
+MAX_FUNC_CALL = 5
 # -----------+
 # Functions:
 # -----------+
 
 # Validates finance info and returns it in StatementExtraction object
-def extract_finance_info(user_input: str) -> StatementExtraction:
-
+def extract_finance_info(user_input: str, chat_history: list[str]) -> StatementExtraction:
+    history_string = "\n".join([f"{msg}" for msg in chat_history])
     response = client.beta.chat.completions.parse(
         model="gpt-4.1-mini",
         messages=[
             {
                 "role": "system",
-                "content": "Analyze if the text describes a income, expense, recurring expense, or recurring revenue."
+                "content": "You are a helpful assistant for our money tracking and budgeting app. Analyze if the text contains actions to create, update, delete or save a transaction, recurring transaction, a budget or whether the user wants information related to the budgeting app. Extract each action/request that is in the statement."
             },
+            {"role": "system", "content": f"Chat history: \n{history_string}"},
             {"role": "user", "content": user_input}
         ]
         ,
@@ -31,107 +39,219 @@ def extract_finance_info(user_input: str) -> StatementExtraction:
     print("Statement Extraction: ", result, "\n\n")
     return result
 
-# Parses a StatementExtraction Object into an expense
-def parse_finance_expense(statementExtraction: StatementExtraction) -> Expenses:
-    response = client.beta.chat.completions.parse(
-        model="gpt-4.1-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract detailed information about all expense(s) mentioned in the text. Only include costs."
-            },
-            {"role": "user", "content": statementExtraction.description}
-        ]
-        ,
-        response_format=Expenses
+
+def get_finance_info(description: str, token: str, chat_history: list[str]) -> InfoResponse:
+    user_id = extract_user_id_from_jwt(token)
+    history_string = "\n".join([f"{msg}" for msg in chat_history])
+    print(history_string)
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": f"Previous chat history \n{history_string}"},
+        {"role": "system", "content": f"user id: {user_id}"},
+        {"role": "system", "content": f"The users JWT token is: {token}"},
+        {"role": "system", "content": f"Today's date: {datetime.date.today()}"},
+        {"role": "user", "content" : description},
+    ]
+
+    completion1 = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        tools=TOOLS
     )
 
-    result = response.choices[0].message.parsed
-    return result
+    tool_call_length = 0
+    if completion1.choices[0].message.tool_calls:
+        tool_call_length = len(completion1.choices[0].message.tool_calls)
+
+    count = 0
+    while tool_call_length and count < MAX_FUNC_CALL:
+        messages.append(completion1.choices[0].message)
+
+        for tool_call in completion1.choices[0].message.tool_calls:
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments)
+
+            result = call_function(name, **args)
+
+            print(f"function name: {name} args: {args}")
+
+            if isinstance(result, list):
+                result = [item.model_dump(mode="json") if isinstance(item, BaseModel) else item for item in result]
+            elif isinstance(result, BaseModel):
+                result = result.model_dump(mode="json")
+
+            messages.append(
+                {"role": "tool", "tool_call_id": tool_call.id, "content": json.dumps(result)}
+            )
+
+        completion1 = client.chat.completions.create(
+            model=MODEL,
+            messages=messages,
+            tools=TOOLS
+        )
+
+        tool_call_length = len(completion1.choices[0].message.tool_calls or [])
+        count += 1
 
 
-def parse_finance_income(statementExtraction: StatementExtraction, ) -> Incomes:
-    response = client.beta.chat.completions.parse(
-        model="gpt-4.1-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract detailed information about all income(s) mentioned in the text."
-            },
-            {"role": "user", "content": statementExtraction.description}
-        ]
-        ,
-        response_format=Incomes
+    completion_2 = client.beta.chat.completions.parse(
+        model=MODEL,
+        messages=messages,
+        response_format=InfoResponse
+    )
+    final_response = completion_2.choices[0].message.parsed
+    return final_response
+
+def complete_budget_action(description: str, token: str, chat_history: list[str]) -> BudgetResponse:
+    user_id = extract_user_id_from_jwt(token)
+    history_string = "\n".join([f"{msg}" for msg in chat_history])
+    print(history_string)
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": f"user id: {user_id}"},
+        {"role": "system", "content": f"Previous chat history \n{history_string}"},
+        {"role": "system", "content": f"The users JWT token is: {token}"},
+        {"role": "system", "content": f"Today's date: {datetime.date.today()}"},
+        {"role": "user", "content": description},
+    ]
+
+    completion1 = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        tools=TOOLS
     )
 
+    tool_call_length = 0
+    if completion1.choices[0].message.tool_calls:
+        tool_call_length = len(completion1.choices[0].message.tool_calls)
 
-    result = response.choices[0].message.parsed
-    return result
+    count = 0
+    while tool_call_length and count < MAX_FUNC_CALL:
+        # Append the assistant's tool_call message once
+        messages.append(completion1.choices[0].message)
 
-def add_recurring_revenue(description: str) -> RecurringRevenues:
-    response = client.beta.chat.completions.parse(
-        model="gpt-4.1-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract the recurring revenue(s) details."
-            },
-            {"role": "user", "content": description}
-        ]
-        ,
-        response_format=RecurringRevenues
+        # Respond to each tool_call
+        for tool_call in completion1.choices[0].message.tool_calls:
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments)
+
+            result = call_function(name, **args)
+
+            print(f"function name: {name} args: {args}")
+
+            if isinstance(result, list):
+                result = [item.model_dump(mode="json") if isinstance(item, BaseModel) else item for item in result]
+            elif isinstance(result, BaseModel):
+                result = result.model_dump(mode="json")
+
+            messages.append(
+                {"role": "tool", "tool_call_id": tool_call.id, "content": json.dumps(result)}
+            )
+
+        completion1 = client.chat.completions.create(
+            model=MODEL,
+            messages=messages,
+            tools=TOOLS
+        )
+
+        tool_call_length = len(completion1.choices[0].message.tool_calls or [])
+        count += 1
+
+
+    completion_2 = client.beta.chat.completions.parse(
+        model=MODEL,
+        messages=messages,
+        response_format=BudgetResponse
+    )
+    final_response = completion_2.choices[0].message.parsed
+    return final_response
+
+
+def complete_transaction_action(description: str, token: str, chat_history: list[str]) -> TransactionResponse:
+    user_id = extract_user_id_from_jwt(token)
+    history_string = "\n".join([f"{msg}" for msg in chat_history])
+    print(history_string)
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": f"user id: {user_id}"},
+        {"role": "system", "content": f"Previous chat history \n{history_string}"},
+        {"role": "system", "content": f"Today's date: {datetime.date.today()}"},
+        {"role": "system", "content": f"The users JWT token is: {token}"},
+        {"role": "user", "content": description},
+    ]
+
+    completion1 = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        tools=TOOLS
     )
 
-    return response.choices[0].message.parsed
+    tool_call_length = 0
+    if completion1.choices[0].message.tool_calls:
+        tool_call_length = len(completion1.choices[0].message.tool_calls)
 
-def add_recurring_expense(description: str) -> RecurringCharges:
-    response = client.beta.chat.completions.parse(
-        model="gpt-4.1-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract the recurring charge(s) details."
-            },
-            {"role": "user", "content": description}
-        ]
-        ,
-        response_format=RecurringCharges
+    count = 0
+    while tool_call_length and count < MAX_FUNC_CALL:
+        # Append the assistant's tool_call message once
+        messages.append(completion1.choices[0].message)
+
+        # Respond to each tool_call
+        for tool_call in completion1.choices[0].message.tool_calls:
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments)
+
+            result = call_function(name, **args)
+
+            print(f"function name: {name} args: {args}")
+
+            if isinstance(result, list):
+                result = [item.model_dump(mode="json") if isinstance(item, BaseModel) else item for item in result]
+            elif isinstance(result, BaseModel):
+                result = result.model_dump(mode="json")
+
+            messages.append(
+                {"role": "tool", "tool_call_id": tool_call.id, "content": json.dumps(result)}
+            )
+
+        completion1 = client.chat.completions.create(
+            model=MODEL,
+            messages=messages,
+            tools=TOOLS
+        )
+
+        tool_call_length = len(completion1.choices[0].message.tool_calls or [])
+        count += 1
+
+    completion_2 = client.beta.chat.completions.parse(
+        model=MODEL,
+        messages=messages,
+        response_format=TransactionResponse
     )
+    final_response = completion_2.choices[0].message.parsed
+    return final_response
 
-    return response.choices[0].message.parsed
+def process_finance_request(user_request: str, token: str, chat_history: list[str]) -> list[Response]:
+    extracted_statements = extract_finance_info(user_request, chat_history)
+    responses = []
+    if not extracted_statements.is_finance_statement:
+        return [Response(success=False, error_message="Sorry, I can only answer questions in relation to our application.", type=StatementType.ERROR)]
 
-def process_finance_request(user_request: str) -> list[Response]:
-    responses: list[Response] = []
-    extracted_info = extract_finance_info(user_request)
-
-    if extracted_info.is_income:
-        parsed_income = parse_finance_income(extracted_info)
-        incomeResponse = IncomeResponse(success=True, type=ResponseType.INCOME, income=parsed_income)
-        responses.append(incomeResponse)
-
-    if extracted_info.is_recurring_revenue:
-        parsed_recurring_revenue = add_recurring_revenue(extracted_info.description)
-        recurringRevenueResponse = RecurringRevenueResponse(success=True, type=ResponseType.RECURRING_REVENUE, recurringRevenue=parsed_recurring_revenue)
-        responses.append(recurringRevenueResponse)
-
-
-    if extracted_info.is_expense:
-        parsed_expense = parse_finance_expense(extracted_info)
-        expenseResponse = ExpenseResponse(success=True, type=ResponseType.EXPENSE, expense=parsed_expense)
-        responses.append(expenseResponse)
-
-    if extracted_info.is_recurring_expense:
-        parsed_recurring_expense = add_recurring_expense(extracted_info.description)
-        recurringChargeResponse = RecurringChargeResponse(success=True, type=ResponseType.RECURRING_CHARGE, recurringCharge=parsed_recurring_expense)
-        responses.append(recurringChargeResponse)
-
-
-
-    if not extracted_info.is_income and not extracted_info.is_expense and not extracted_info.is_recurring_expense and not extracted_info.is_recurring_revenue:
-        return [Response(success="False", error_message="Sorry, we cannot help you with that.", type=ResponseType.ERROR)]
+    for statement in extracted_statements.statements:
+        print(f"Statement: {statement}")
+        if statement.type == StatementType.INFO:
+            if statement.confidence and statement.confidence > 0.7:
+                response = get_finance_info(statement.description, token, chat_history)
+                responses.append(response)
+        elif statement.type == StatementType.BUDGET:
+            if statement.confidence and statement.confidence > 0.7:
+                response = complete_budget_action(statement.description, token, chat_history)
+                responses.append(response)
+        elif statement.type == StatementType.TRANSACTION:
+            if statement.confidence and statement.confidence > 0.7:
+                response = complete_transaction_action(statement.description, token, chat_history)
+                responses.append(response)
+        elif statement.type == StatementType.ERROR:
+            error_response = Response(success=False, error_message=statement.description, type=StatementType.ERROR)
+            responses.append(error_response)
 
     return responses
-
-
-
-

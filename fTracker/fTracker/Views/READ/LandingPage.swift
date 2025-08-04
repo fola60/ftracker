@@ -31,7 +31,7 @@ struct LandingPage: View {
             .background(.gray.opacity(0.1))
 
             HStack {
-                // Ask AI Button VStack
+                
                 VStack {
                     HStack {
                         Image(systemName: "message.circle.fill")

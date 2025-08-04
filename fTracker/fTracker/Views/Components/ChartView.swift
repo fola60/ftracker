@@ -10,15 +10,25 @@ struct ChartView: View {
     @State private var transactions: [Transaction] = []
     @State private var cumulativeAmountByDay: [Double] = []
     
-    let type: ChartType
+    @State var type: ChartType
     
     private var filteredTransactions: [Transaction] {
+        let now = Date()
+        let calendar = Calendar.current
+        let currentYear = calendar.component(.year, from: now)
+        let currentMonth = calendar.component(.month, from: now)
+
         return transactions.filter { transaction in
+            guard let time = transaction.time else { return false }
+            let transactionYear = calendar.component(.year, from: time)
+            let transactionMonth = calendar.component(.month, from: time)
+            guard transactionYear == currentYear && transactionMonth == currentMonth else { return false }
+
             switch type {
             case .income:
-                return transaction.transactionType == .income || transaction.transactionType == .recurring_income
+                return transaction.transactionType == .income
             case .expense:
-                return transaction.transactionType == .expense || transaction.transactionType == .recurring_expense
+                return transaction.transactionType == .expense
             }
         }
     }
@@ -121,6 +131,14 @@ struct ChartView: View {
             await loadData()
         }
         .frame(maxWidth: UIScreen.main.bounds.width - 40)
+        .onTapGesture {
+            switch type {
+            case .income:
+                type = .expense
+            case .expense:
+                type = .income
+            }
+        }
         
     }
 }

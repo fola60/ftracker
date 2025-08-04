@@ -3,6 +3,7 @@ package com.ftracker.server.controller;
 import com.ftracker.server.dto.BudgetCategoryRequest;
 import com.ftracker.server.dto.BudgetRequest;
 import com.ftracker.server.entity.Budget;
+import com.ftracker.server.entity.BudgetCategory;
 import com.ftracker.server.service.BudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +33,7 @@ public class BudgetController {
     }
 
     @PostMapping("/save-budget-category")
-    public boolean saveBudgetCategory(@Validated @RequestBody BudgetCategoryRequest budgetCategoryRequest) {
+    public BudgetCategory saveBudgetCategory(@Validated @RequestBody BudgetCategoryRequest budgetCategoryRequest) {
         return budgetService.saveBudgetCategory(budgetCategoryRequest);
     }
 

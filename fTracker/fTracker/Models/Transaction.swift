@@ -17,22 +17,42 @@ final class Transaction:  Codable, ObservableObject, Identifiable, Sendable {
     let transactionType: TransactionType
     let time_recurring: Int?
     
-    
-    init(id: Int?, category: Category, time: String?, amount: Float, name: String, description: String, transactionType: TransactionType, time_recurring: Int?) {
-        self.id = id
-        self.category = category
-        self.amount = amount
-        self.name = name
-        self.description = description
-        self.transactionType = transactionType
-        self.time_recurring = time_recurring
-        if let time = time {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decodeIfPresent(Int.self, forKey: .id)
+        self.amount = try container.decode(Float.self, forKey: .amount)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decode(String.self, forKey: .description)
+        self.transactionType = try container.decode(TransactionType.self, forKey: .transactionType)
+        self.time_recurring = try container.decodeIfPresent(Int.self, forKey: .time_recurring)
+
+        
+        if let decodedCategory = try container.decodeIfPresent(Category.self, forKey: .category) {
+            self.category = decodedCategory
+        } else {
+            self.category = Category(id: nil, headCategory: .miscellaneous, name: "Miscellaneous")
+        }
+
+        
+        if let timeString = try container.decodeIfPresent(String.self, forKey: .time) {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
-            self.time = formatter.date(from: time)
+            self.time = formatter.date(from: timeString)
         } else {
             self.time = nil
         }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case category
+        case time
+        case amount
+        case name
+        case description
+        case transactionType
+        case time_recurring
     }
 }
 

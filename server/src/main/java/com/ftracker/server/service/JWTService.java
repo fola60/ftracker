@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +23,20 @@ import java.util.function.Function;
 public class JWTService {
 
     private final UserRepo userRepo;
-    private String secretKey = "";
+
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     public JWTService(UserRepo userRepo) {
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        // Key already generated and stored in application.properties
+//        try {
+//            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+//            SecretKey sk = keyGen.generateKey();
+//            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
         this.userRepo = userRepo;
     }
 

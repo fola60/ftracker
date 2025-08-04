@@ -70,9 +70,15 @@ struct BudgetView: View {
     }
     
     private var totalSpent: Float {
+        guard let selectedBudget = selectedBudget else { return 0.00 }
+        
         var total: Float = 0.00
+        let categoryIDs: Set<Int> = Set(selectedBudget.budgetCategories.compactMap { $0.categoryId.id })
+        
         for expense in filteredExpenses {
-            total += expense.amount
+            if categoryIDs.contains(expense.category.id ?? -1) {
+                total += expense.amount
+            }
         }
         return total
     }
@@ -347,13 +353,17 @@ struct BudgetView: View {
     }
     
     private func categoryCard(for budgetCategory: BudgetCategory) -> some View {
-
+        
         let spent = spentAmount(for: budgetCategory)
         let budgetAmount = budgetCategory.budgetAmount
-        let progress = budgetAmount == 0 ? 0.0 : spent / budgetAmount
-        
+        var progress = budgetAmount == 0 ? 1.0 : spent / budgetAmount
+        if budgetAmount == 0.0 && spent == 0.0 {
+            progress = 0.0
+        }
+        let remainingBalance = Int(budgetAmount - spent)
+
         return VStack(spacing: 10) {
-            // Circular progress view
+            
             ZStack {
                 Circle()
                     .stroke(lineWidth: 8)
@@ -366,7 +376,7 @@ struct BudgetView: View {
                     .rotationEffect(.degrees(-90))
                 
                 VStack(spacing: 2) {
-                    Image(systemName: CategoryView.categoryIconMap[budgetCategory.categoryId.name] ?? "eurosign.bank.building")
+                    Image(systemName: CategoryView.iconForCategory(budgetCategory.categoryId.name))
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(CategoryView.colorForHeadCategory(budgetCategory.categoryId.headCategory))
@@ -385,7 +395,7 @@ struct BudgetView: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                 
-                Text("Remaining: \(Globals.currencySymbol)\(Int(budgetAmount - spent))")
+                Text("\(remainingBalance >= 0 ? "Remaining: " : "Over Budget: ") \(Globals.currencySymbol)\(abs(remainingBalance))")
                     .font(.caption)
                     .foregroundColor(budgetAmount - spent >= 0 ? .green : .red)
             }

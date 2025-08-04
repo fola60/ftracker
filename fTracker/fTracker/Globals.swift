@@ -74,4 +74,26 @@ class Globals {
         return categories.first(where: { $0.name == "Miscellaneous" }) ?? Category(id: 0, headCategory: .miscellaneous, name: "Miscellaneous")
     }
     
+    public static func isUserSignedIn() async -> Bool {
+
+        guard let url = URL(string: "\(Globals.backendUrl)/user/auth/check-token") else {
+            return false
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("Bearer \(jsonToken)", forHTTPHeaderField: "Authorization")
+
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse {
+                print("SUCCESS \(httpResponse.statusCode)")
+                return httpResponse.statusCode == 200
+            }
+        } catch {
+            print("Error verifying token: \(error)")
+        }
+
+        return false
+    }
 }

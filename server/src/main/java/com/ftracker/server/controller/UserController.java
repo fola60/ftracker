@@ -24,6 +24,13 @@ public class UserController {
     @Autowired
     private EmailService emailService;
 
+    @GetMapping("/auth/check-token")
+    public ResponseEntity<?> checkAuthentication() {
+        return ResponseEntity.ok(Map.of(
+                "authenticated", true
+        ));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> postUser(@Validated @RequestBody User user) {
         User existingUser = service.getUserByEmail(user.getEmail());
@@ -169,6 +176,8 @@ public class UserController {
         }
     }
 
+
+
     private String buildPasswordResetForm(String token) {
         return "<!DOCTYPE html>" +
                 "<html lang='en'>" +
@@ -278,7 +287,6 @@ public class UserController {
     public String login(@Validated @RequestBody User user) {
         return service.verify(user);
     }
-
 
 
     @GetMapping("/get-user/{id}")

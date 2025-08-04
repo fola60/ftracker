@@ -17,8 +17,9 @@ struct AnalyticView: View {
     @State private var selectedPrompt: PromptWrapper? = nil
     
     
+    
     static public let headCategoryMap: [HeadCategoryType: String] = [
-        .entertainment: "",
+        .entertainment: "gamecontroller.fill",
         .food_and_drinks: "fork.knife",
         .housing: "house.fill",
         .income: "dollarsign.circle",
@@ -89,27 +90,7 @@ struct AnalyticView: View {
         return true
     }
     
-    private func colorForHeadCategory(_ headCategory: HeadCategoryType) -> Color {
-        switch headCategory {
-        case .entertainment:
-            return .purple
-        case .food_and_drinks:
-            return .orange
-        case .housing:
-            return .blue
-        case .income:
-            return .green
-        case .lifestyle:
-            return .pink
-        case .miscellaneous:
-            return .yellow
-        case .savings:
-            return .teal
-        case .transportation:
-            return .indigo
-        }
-    }
-    
+        
     private func loadData() async {
         
         let fetchedTransactions = await getTransactions()
@@ -246,7 +227,7 @@ struct AnalyticView: View {
                                 innerRadius: .ratio(0.85),
                                 angularInset: 2.0
                             )
-                            .foregroundStyle(colorForHeadCategory(key))
+                            .foregroundStyle(CategoryView.colorForHeadCategory(key))
                             .cornerRadius(12.0)
                         }
                     }
@@ -257,7 +238,7 @@ struct AnalyticView: View {
                         Image(systemName: AnalyticView.headCategoryMap[backgroundHeadCategory] ?? "questionmark.circle.fill")
                             .resizable()
                             .frame(width: 70, height: 70)
-                            .foregroundStyle(colorForHeadCategory(backgroundHeadCategory))
+                            .foregroundStyle(CategoryView.colorForHeadCategory(backgroundHeadCategory))
                         Text("\(Globals.currencySymbol)\(Int(selectedCategoryAmount))")
                             .font(.system(size: 26))
                             .font(.headline)
@@ -312,7 +293,7 @@ struct AnalyticView: View {
                                     x: .value("Category", firstTransaction.category.name),
                                     y: .value("Amount", totalAmount)
                                 )
-                                .foregroundStyle(colorForHeadCategory(firstTransaction.category.headCategory))
+                                .foregroundStyle(CategoryView.colorForHeadCategory(firstTransaction.category.headCategory))
                                 .cornerRadius(8)
                             }
                         }

@@ -36,6 +36,11 @@ public class TransactionController {
         return transactionService.getAllRecurringIncome(user_id);
     }
 
+    @GetMapping("/get-all-recurring-expenses/{user_id}")
+    public List<Transaction> getAllRecurringExpenses(@PathVariable Integer user_id) {
+        return transactionService.getAllRecurringExpense(user_id);
+    }
+
     @PostMapping("/post")
     public Transaction saveTransaction(@Validated @RequestBody TransactionRequest transactionRequest) {
         return transactionService.saveTransaction(transactionRequest);

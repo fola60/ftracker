@@ -189,19 +189,15 @@ struct AIChat: View {
         await whisperState.toggleRecord()
         if !whisperState.isRecording {
             let transcribedText = whisperState.transcribedAudio
-            print("??? \(transcribedText) ???")
-            
-            
-            text = transcribedText
-            
             
             if !transcribedText.isEmpty {
                 isProcessing = true
                 let userMessage = ChatMessage(sender: .user, content: .text(transcribedText))
                 chats.append(userMessage)
                 await processSpeechRequest(request: transcribedText)
-                text = "" // Clear the text field after processing
                 isProcessing = false
+                
+                whisperState.transcribedAudio = ""
             }
         }
     }

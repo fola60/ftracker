@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct ListView: View {
@@ -12,13 +11,15 @@ struct ListView: View {
     @State private var hasLoaded: Bool = false
     @State private var selectedDate: Date = Date()
     @State private var selectedTransaction: Transaction? = nil
+    @State private var refreshTrigger = UUID()
     
     
     private var filteredTransactions: [Transaction] {
         let calendar = Calendar.current
         return transactions.filter { transaction in
             guard let transactionDate = transaction.time else { return false }
-            return calendar.isDate(transactionDate, equalTo: selectedDate, toGranularity: .month)
+            guard calendar.isDate(transactionDate, equalTo: selectedDate, toGranularity: .month) else { return false }
+            return transaction.transactionType != .recurring_income && transaction.transactionType != .recurring_expense
         }
     }
     
@@ -80,6 +81,12 @@ struct ListView: View {
         sortedDates = Array(allDates).sorted(by: >)
     }
     
+    
+    private func refreshData() async {
+        await loadData()
+        refreshTrigger = UUID()
+    }
+    
     var body: some View {
         ZStack {
             
@@ -96,10 +103,15 @@ struct ListView: View {
                     hasLoaded = true
                 }
             }
+            .id(refreshTrigger)
             
         }
         .sheet(item: $selectedTransaction) { transaction in
-            TransactionView(transaction: transaction, create: false)
+            TransactionView(transaction: transaction, create: false, onTransactionChanged: {
+                Task {
+                    await refreshData()
+                }
+            })
                 .presentationDetents([.fraction(0.97)])
                 .presentationDragIndicator(.hidden)
         }
@@ -194,9 +206,9 @@ struct ListView: View {
         return HStack(spacing: 12) {
             
             VStack {
-                Image(systemName: iconForCategory(transaction.category.name))
+                Image(systemName: CategoryView.iconForCategory(transaction.category.name))
                     .font(.title2)
-                    .foregroundColor(colorForCategory(transaction.category))
+                    .foregroundColor(CategoryView.colorForHeadCategory(transaction.category.headCategory))
                     .frame(width: 30, height: 30)
                 Spacer()
             }
@@ -285,49 +297,8 @@ struct ListView: View {
     }
     
     
-    private func iconForCategory(_ categoryName: String) -> String {
-        let categoryIconMap = [
-            "Salary": "eurosign.arrow.trianglehead.counterclockwise.rotate.90",
-            "Savings": "banknote.fill",
-            "Rent": "house.fill",
-            "Electricity": "bolt.fill",
-            "Internet": "wifi",
-            "Telephone": "phone.fill",
-            "Tv": "tv.fill",
-            "Restaurant": "fork.knife",
-            "Groceries": "cart.fill",
-            "Cloths": "tshirt.fill",
-            "Gym": "dumbbell.fill",
-            "Public Transport": "tram.fill",
-            "Vehicle": "fuelpump.fill",
-            "Miscellaneous": "eurosign.bank.building"
-        ]
-        
-        return categoryIconMap[categoryName] ?? "eurosign.bank.building"
-    }
     
     
-    private func colorForCategory(_ category: Category) -> Color {
-        let categoryName = category.name.lowercased()
-        
-        if categoryName.contains("salary") || categoryName.contains("income") {
-            return .green
-        } else if categoryName.contains("rent") || categoryName.contains("electricity") || categoryName.contains("internet") || categoryName.contains("telephone") || categoryName.contains("tv") {
-            return .blue
-        } else if categoryName.contains("restaurant") || categoryName.contains("groceries") {
-            return .orange
-        } else if categoryName.contains("transport") || categoryName.contains("vehicle") {
-            return .red
-        } else if categoryName.contains("gym") || categoryName.contains("cloths") {
-            return .pink
-        } else if categoryName.contains("savings") {
-            return .mint
-        } else if categoryName.contains("tv") || categoryName.contains("entertainment") {
-            return .purple
-        } else {
-            return .gray
-        }
-    }
 }
 
 

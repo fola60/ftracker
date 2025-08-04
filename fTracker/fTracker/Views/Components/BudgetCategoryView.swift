@@ -14,7 +14,6 @@ struct BudgetCategoryView: View {
     
     
     private func loadData() async {
-        dump(budgetCategory)
         if let budgetCategory = budgetCategory {
             amount = budgetCategory.budgetAmount
             category = budgetCategory.categoryId
@@ -48,7 +47,7 @@ struct BudgetCategoryView: View {
                 .disabled(showKeypad)
             
             HStack {
-                Image(systemName: CategoryView.categoryIconMap[category.name] ?? "eurosign.bank.building")
+                Image(systemName: CategoryView.iconForCategory(category.name))
                     .resizable()
                     .frame(width: 30, height: 30)
                     .padding(.leading)

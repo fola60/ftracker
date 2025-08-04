@@ -93,18 +93,26 @@ public class UserService {
         List<Category> defaultCategories = new ArrayList<>();
 
         defaultCategories.add(new Category("Salary", HeadCategoryType.INCOME));
+        defaultCategories.add(new Category("Income", HeadCategoryType.INCOME));
         defaultCategories.add(new Category("Savings", HeadCategoryType.SAVINGS));
         defaultCategories.add(new Category("Rent", HeadCategoryType.HOUSING));
+        defaultCategories.add(new Category("Housing", HeadCategoryType.HOUSING));
         defaultCategories.add(new Category("Electricity", HeadCategoryType.HOUSING));
         defaultCategories.add(new Category("Internet", HeadCategoryType.HOUSING));
         defaultCategories.add(new Category("Telephone", HeadCategoryType.HOUSING));
         defaultCategories.add(new Category("Tv", HeadCategoryType.ENTERTAINMENT));
+        defaultCategories.add(new Category("Entertainment", HeadCategoryType.ENTERTAINMENT));
         defaultCategories.add(new Category("Restaurant", HeadCategoryType.FOOD_AND_DRINKS));
         defaultCategories.add(new Category("Groceries", HeadCategoryType.FOOD_AND_DRINKS));
+        defaultCategories.add(new Category("Snacks", HeadCategoryType.FOOD_AND_DRINKS));
+        defaultCategories.add(new Category("Drinks", HeadCategoryType.FOOD_AND_DRINKS));
         defaultCategories.add(new Category("Cloths", HeadCategoryType.LIFESTYLE));
         defaultCategories.add(new Category("Gym", HeadCategoryType.LIFESTYLE));
+        defaultCategories.add(new Category("Lifestyle", HeadCategoryType.LIFESTYLE));
         defaultCategories.add(new Category("Public Transport", HeadCategoryType.TRANSPORTATION));
         defaultCategories.add(new Category("Vehicle", HeadCategoryType.TRANSPORTATION));
+        defaultCategories.add(new Category("Transportation", HeadCategoryType.TRANSPORTATION));
+        defaultCategories.add(new Category("Miscellaneous", HeadCategoryType.MISCELLANEOUS));
 
         return defaultCategories;
     }

@@ -3,23 +3,35 @@ import SwiftUI
 struct CategoryView: View {
     @Binding var category: Category
     @State private var userCategories: [Category] = []
-    static public let categoryIconMap = [
-        "Salary":"eurosign.arrow.trianglehead.counterclockwise.rotate.90",
-        "Savings":"banknote.fill",
-        "Rent":"house.fill",
-        "Electricity":"bolt.fill",
-        "Internet":"wifi",
-        "Telephone":"phone.fill",
-        "Tv":"tv.fill",
-        "Restaurant":"fork.knife",
-        "Groceries":"cart.fill",
-        "Cloths":"tshirt.fill",
-        "Gym":"dumbbell.fill",
-        "Public Transport":"tram.fill",
-        "Vehicle":"fuelpump.fill",
-        "Miscellaneous": "eurosign.bank.building"
-    ]
     @Environment(\.dismiss) var dismiss
+    
+    public static func iconForCategory(_ categoryName: String) -> String {
+        let categoryIconMap = [
+            "Salary": "eurosign.arrow.trianglehead.counterclockwise.rotate.90",
+            "Savings": "banknote.fill",
+            "Rent": "house.fill",
+            "Electricity": "bolt.fill",
+            "Internet": "wifi",
+            "Telephone": "phone.fill",
+            "Tv": "tv.fill",
+            "Restaurant": "fork.knife",
+            "Groceries": "cart.fill",
+            "Cloths": "tshirt.fill",
+            "Gym": "dumbbell.fill",
+            "Public Transport": "tram.fill",
+            "Vehicle": "fuelpump.fill",
+            "Miscellaneous": "eurosign.bank.building",
+            "Income": "creditcard.fill",
+            "Housing": "house.fill",
+            "Entertainment": "gamecontroller.fill",
+            "Snacks": "takeoutbag.and.cup.and.straw.fill",
+            "Drinks": "wineglass.fill",
+            "Lifestyle": "sparkles",
+            "Transportation": "car.fill"
+        ]
+        
+        return categoryIconMap[categoryName] ?? "eurosign.bank.building"
+    }
     
     
     public static func colorForHeadCategory(_ headCategory: HeadCategoryType) -> Color {
@@ -115,7 +127,7 @@ struct CategoryView: View {
     }
     
     private func categoryItem(for cat: Category, headCategory: HeadCategoryType) -> some View {
-        let iconName = CategoryView.categoryIconMap[cat.name] ?? "questionmark.circle.fill"
+        let iconName = CategoryView.iconForCategory(cat.name)
         let backgroundColor = CategoryView.colorForHeadCategory(headCategory)
         
         return CategoryItemView(

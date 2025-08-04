@@ -74,8 +74,9 @@ public class TransactionService {
             transaction.setTime_recurring(transactionRequest.getTime_recurring());
         }
 
-        transactionRepo.save(transaction);
-        user.getTransactions().add(transaction);
+        transaction = transactionRepo.save(transaction);
+        if (user != null)
+            user.getTransactions().add(transaction);
         return transaction;
     }
 }

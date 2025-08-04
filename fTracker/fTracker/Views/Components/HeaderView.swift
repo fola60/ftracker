@@ -18,18 +18,6 @@ struct HeaderView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Button {
-                    
-                } label: {
-                    Image(systemName: "gearshape.fill")
-                        .resizable()
-                        .foregroundStyle(.white)
-                        .frame(width: 25, height: 25)
-                }
-                Spacer()
-            }
-            .padding()
             
             HStack {
                 Button {

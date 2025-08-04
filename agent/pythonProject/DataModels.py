@@ -12,12 +12,6 @@ class HeadCategoryType(Enum):
     SAVINGS = "SAVINGS"
     TRANSPORTATION = "TRANSPORTATION"
 
-class ResponseType(Enum):
-    EXPENSE = "EXPENSE"
-    INCOME = "INCOME"
-    RECURRING_CHARGE = "RECURRING_CHARGE"
-    RECURRING_REVENUE = "RECURRING_REVENUE"
-    ERROR = "ERROR"
 
 class TransactionType(Enum):
     EXPENSE = "EXPENSE"
@@ -25,102 +19,61 @@ class TransactionType(Enum):
     RECURRING_EXPENSE = "RECURRING_EXPENSE"
     RECURRING_INCOME = "RECURRING_INCOME"
 
+class StatementType(Enum):
+    BUDGET = "BUDGET"
+    TRANSACTION = "TRANSACTION"
+    INFO = "INFO"
+    ERROR = "ERROR"
+
+class CrudActionType(Enum):
+    CREATE = "CREATE"
+    READ = "READ"
+    UPDATE = "UPDATE"
+    DELETE = "DELETE"
+    NONE = "NONE"
+
+class StatementItem(BaseModel):
+    description: str = Field(description="Raw description of the individual action requested.")
+    type: StatementType = Field(description="The main type of the action requested (e.g., TRANSACTION, BUDGET, INFO).")
+    confidence: Optional[float] = Field(default=None, description="Optional confidence score for this classification.")
 
 class StatementExtraction(BaseModel):
-    description: str = Field(description="Raw description of the event.")
-    is_expense: bool = Field(description="Whether this text contains an expense")
-    is_income: bool = Field(description="Whether this text contains an income")
-    is_recurring_expense: bool = Field(description="Whether this is described as a recurring expense like a subscription or bill etc or they specify it as a recurring expense.")
-    is_recurring_revenue: bool = Field(description="Whether this is described as a recurring revenue source like a salary etc or they specify it as recurring income.")
-#
-# class Expense(BaseModel):
-#     id: int = Field(description="Integer id of user")
-#     type: ExpenseType = Field(description="The type of expense.")
-#     time: str = Field(description="When the expense was purchased.")
-#     amount: float = Field(description="How much was paid for the expense.")
-#     name: str = Field(description="The name of the expense")
-#     description: str = Field(description="A description of any details related to the expense.")
-#
-# class Income(BaseModel):
-#     id: int = Field(description="Integer id of user")
-#     type: IncomeType = Field(description="The type of income.")
-#     amount: float = Field(description="How much was received for the income.")
-#     time: str = Field(description="When the income was received.")
-#     name: str = Field(description="The name of the income")
-#     description: str = Field(description="A description of any details related to the income.")
-#
-# class RecurringCharge(BaseModel):
-#     id: int = Field(description="Integer id of user")
-#     time_recurring: int = Field(description="The frequency of the charge, in days.")
-#     next_date: str = Field(description="The date of the next charge.")
-#     type: ExpenseType = Field(description="The type of charge.")
-#     recurring_type: RecurringChargeType = Field(description="The type of recurring charge type.")
-#     amount: float = Field(description="How much was paid for the charge.")
-#     name: str = Field(description="The name of the charge")
-#     description: str = Field(description="A description of any details related to the expense.")
-#
-# class RecurringRevenue(BaseModel):
-#     id: int = Field(description="Integer id of user")
-#     time_recurring: int = Field(description="The frequency of the revenue, in days.")
-#     next_date: str = Field(description="The date of the next revenue.")
-#     amount: float = Field(description="How much is received.")
-#     type: RecurringRevenueType = Field(description="The type of revenue.")
-#     name: str = Field(description="A summarised name of the revenue")
-#     description: str = Field(description="A description of any details related to the revenue.")
-#
-#
-# class Expenses(BaseModel):
-#     expense_type: list[ExpenseType] = Field(description="Type of expense", default=ExpenseType.OTHER)
-#     cost: list[float] = Field(description="Cost of expense.")
-#     name: list[str] = Field(description="Summarised name of the expense e.g. groceries supermarket-name")
-#     description: list[str] = Field(description="Details of the purchase")
-#
-#
-# class Incomes(BaseModel):
-#     income_type: list[IncomeType] = Field(description="Type of income e.g. gift, stocks, betting,  etc", default=IncomeType.OTHER)
-#     amount: list[float] = Field(description="Amount receiving..")
-#     name: list[str] = Field(description="Summarised name of the expense e.g. monthly salary")
-#     description: list[str] = Field(description="Details of the purchase")
-#
-#
-# class RecurringCharges(BaseModel):
-#     time_recurring: list[int] = Field(description="The frequency of the charge in days.", default=30)
-#     type: list[ExpenseType] = Field(description="The type of charge", default=ExpenseType.OTHER)
-#     recurring_type: list[RecurringChargeType] = Field(description="The type of recurring charge e.g. subscription, bill", default=RecurringChargeType.OTHER)
-#     cost: list[float] = Field(description="Cost of recurring charge.")
-#     name: list[str] = Field(description="Summarised name of the expense e.g. Amazon prime subscription")
-#     description: list[str] = Field(description="Details of the purchases")
-#
-#
-# class RecurringRevenues(BaseModel):
-#     time_recurring: list[int] = Field(description="The frequency of the income in days.", default=30)
-#     type: list[RecurringRevenueType] = Field(description="The type of charge", default=RecurringRevenueType.OTHER)
-#     amount: list[float] = Field(description="Cost of charge.")
-#     name: list[str] = Field(description="Summarised name of the expense e.g. Amazon prime subscription")
-#     description: list[str] = Field(description="Details of the revenue")
-
-
-class Response(BaseModel):
-    success: bool = Field(description="Whether the operation was successful", default=False)
-    error_message: Optional[str] = Field(description="Description of the error, if any", default="None")
-    type: ResponseType
-
-
+    is_finance_statement: bool = Field(
+        description="Indicates whether the input text relates to a financial operation such as creating, updating, retrieving, or deleting a transaction or budget, or requesting information about them."
+    )
+    statements: list[StatementItem] = Field(
+        description="List of parsed statements/actions from the user input."
+    )
 
 class Category(BaseModel):
-    id: int
-    headCategory: HeadCategoryType
-    name: str
+    id: int = Field(description="The id of this category")
+    headCategory: HeadCategoryType = Field(description="The head category this category belongs to.")
+    name: str = Field(description="The name of this category")
+
+class CategoryRequestModel(BaseModel):
+    head_category: HeadCategoryType = Field(description="The head category this category belongs to.")
+    name: str = Field(description="The name of this category")
+    user_id: int = Field(description="The user id this category belongs to.")
 
 class Transaction(BaseModel):
     id: int
     category: Optional[Category] = Field(description="The category of transaction")
     time: str = Field(description="The time of the transaction.")
-    amount: list[float] = Field(description="Amount of transaction")
-    name: list[str] = Field(description="Summarised name of the transaction e.g. monthly salary")
-    description: list[str] = Field(description="Details of the transaction.")
+    amount: float = Field(description="Amount of transaction")
+    name: str = Field(description="Summarised name of the transaction e.g. monthly salary")
+    description: str = Field(description="Details of the transaction.")
     transactionType: TransactionType
     time_recurring: Optional[int]= Field(description="Time in days the transaction re occurs if its a recurring transaction.")
+
+class TransactionRequestModel(BaseModel):
+    amount: float = Field(description="Amount of transaction")
+    name: str = Field(description="Summarised name of the transaction e.g. monthly salary")
+    description: str = Field(description="Details of the transaction.")
+    time: str = Field(description="The time of the transaction.")
+    time_recurring: Optional[int] = Field(description="Time in days the transaction re occurs if its a recurring transaction.")
+    transaction_type: TransactionType
+    user_id: int = Field(description="The id of the user")
+    category_id: int = Field(description="The id of the category of transaction")
 
 
 class BudgetCategory(BaseModel):
@@ -128,8 +81,41 @@ class BudgetCategory(BaseModel):
     categoryId: Category = Field(description="The category information")
     budgetAmount: float = Field(description="The amount the user can spend within a month on this category")
 
+class BudgetCategoryRequestModel(BaseModel):
+    budget_id: int = Field(description="The id of the budget this is being added to.")
+    amount: float = Field(description="The monthly cap for this category.")
+    category_id: int = Field(description="The id of the category of this budget")
 
 class Budget(BaseModel):
     id: int
     budgetCategories: list[BudgetCategory]
     name: str = Field(description="The name of the budget")
+
+class BudgetRequestModel(BaseModel):
+    name:str = Field(description="The name of the budget")
+    user_id: int = Field(description="The id of the user this belongs to.")
+
+class Response(BaseModel):
+    success: bool = Field(description="Whether the operation was successful", default=False)
+    error_message: Optional[str] = Field(description="Description of the error, if any", default="None")
+    type: StatementType
+
+class TransactionResponse(Response):
+    action: str = Field(description="A user friendly description, of the actions completed for the user.")
+    transaction_id: Optional[int] = Field(description="The id of the transaction that was created, updated or deleted")
+    action_type: CrudActionType = Field(description="What type of action was taken. Whether a transaction was created, read, updated, deleted or no action.")
+
+class BudgetResponse(Response):
+    action: str = Field(description="A user friendly description, of the actions completed for the user.")
+    budgets: list[Budget] = Field(description="The budget's that was created, updated or deleted")
+    action_type: CrudActionType = Field(description="What type of action was taken. Whether a budget was created, read, updated, deleted or no action.")
+
+class InfoResponse(Response):
+    action: str = Field(description="A user friendly response to their request.")
+    transaction: Optional[list[Transaction]] = Field(description="The possible transaction object the user requested")
+    budgets: Optional[list[Budget]] = Field(description="The possible budget object the user requested")
+
+class FinanceRequest(BaseModel):
+    request: str
+    token: str
+    chat_history: list[str]
