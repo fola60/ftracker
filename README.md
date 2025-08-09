@@ -13,7 +13,7 @@ This is a budgeting tool, to assist users in keeping track of their expenses. It
 ### Features:
 #### Landing page
 <p>
-  <img src="./photos/homepage.png" alt="Home Page" width="400">
+  <img src="./photos/homepage.png" alt="Home Page" width="200">
   <img src="./photos/homepage_list.png" alt="Home Page List" width="200">
 </p>
 
