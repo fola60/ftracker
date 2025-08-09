@@ -12,8 +12,8 @@ This is a budgeting tool, to assist users in keeping track of their expenses. It
 
 ### Features:
 #### Landing page
-![Home-Page](./photos/homepage.png)
-![Home-Page-List](./photos/homepage_list.png)
+<img src="./photos/homepage.png" alt="Home Page" width="400">
+<img src="./photos/homepage_list.png" alt="Home Page List" width="400">
 
 ## Contact
 #### Afolabi Adekanle - afolabiadekanle@gmail.com - [![linkedin][linked-in]][LinkedIn-url]
