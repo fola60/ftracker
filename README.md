@@ -14,37 +14,37 @@ This is a budgeting tool, to assist users in keeping track of their expenses. It
 #### Landing page
 <p>
   <img src="./photos/homepage.png" alt="Home Page" width="400">
-  <img src="./photos/homepage_list.png" alt="Home Page List" width="400">
+  <img src="./photos/homepage_list.png" alt="Home Page List" width="200">
 </p>
 
 #### Analytics
 <p>
-  <img src="./photos/analytics_1.png" alt="Analytics 1" width="400">
-  <img src="./photos/analytics_2.png" alt="Analytics 2" width="400">
-  <img src="./photos/analytics_3.png" alt="Analytics 3" width="400">
+  <img src="./photos/analytics_1.png" alt="Analytics 1" width="200">
+  <img src="./photos/analytics_2.png" alt="Analytics 2" width="200">
+  <img src="./photos/analytics_3.png" alt="Analytics 3" width="200">
 </p>
 
 #### Budget Management
 <p>
-  <img src="./photos/budget_1.png" alt="Budget 1" width="400">
-  <img src="./photos/budget_2.png" alt="Budget 2" width="400">
-  <img src="./photos/budget_edit.png" alt="Budget Edit" width="400">
+  <img src="./photos/budget_1.png" alt="Budget 1" width="200">
+  <img src="./photos/budget_2.png" alt="Budget 2" width="200">
+  <img src="./photos/budget_edit.png" alt="Budget Edit" width="200">
 </p>
 
 #### Chat Bot
 <p>
-  <img src="./photos/chat_bot_1.png" alt="Chat Bot 1" width="400">
-  <img src="./photos/chat_bot_2.png" alt="Chat Bot 2" width="400">
+  <img src="./photos/chat_bot_1.png" alt="Chat Bot 1" width="200">
+  <img src="./photos/chat_bot_2.png" alt="Chat Bot 2" width="200">
 </p>
 
 #### Recurring Transactions
 <p>
-  <img src="./photos/recurring_transactions.png" alt="Recurring Transactions" width="400">
+  <img src="./photos/recurring_transactions.png" alt="Recurring Transactions" width="200">
 </p>
 
 #### Tools
 <p>
-  <img src="./photos/tools.png" alt="Tools" width="400">
+  <img src="./photos/tools.png" alt="Tools" width="200">
 </p>
 
 
