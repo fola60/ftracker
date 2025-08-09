@@ -6,6 +6,14 @@
 * [![Postgres][Postgresql]][Postgresql-url]
 * [![java][Java]][Java-url]
 
+# About the Project
+
+This is a budgeting tool, to assist users in keeping track of their expenses. It has a chat bot implemented to assist users with setting up budgets, gaining insights into their spending and helping users plan for the future.
+
+### Features:
+#### Landing page
+![Home-Page](./photos/homepage.png)
+![Home-Page-List](./photos/homepage_list.png)
 
 ## Contact
 #### Afolabi Adekanle - afolabiadekanle@gmail.com - [![linkedin][linked-in]][LinkedIn-url]
